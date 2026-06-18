@@ -137,7 +137,7 @@ export function CloudSync() {
           Keep her care package safe.
         </h2>
         <p className="mt-5 leading-7 text-cream-100/70">
-          Save memories, favorites, settings, mood, and photos locally first — then back them up privately with Supabase when configured.
+          Save memories, favorites, settings, and mood locally first — then back them up privately with Supabase when configured.
         </p>
       </div>
 
@@ -150,7 +150,7 @@ export function CloudSync() {
           </p>
 
           <div className="mt-6 rounded-3xl border border-white/10 bg-slate-950/40 p-5 font-mono text-sm leading-7 text-cream-100/75">
-            <p>1. Run: supabase/schema.sql in Supabase SQL Editor, including the memory-photos bucket policies</p>
+            <p>1. Run: supabase/schema.sql in Supabase SQL Editor</p>
             <p>2. Create .env.local in this project</p>
             <p>3. Add VITE_SUPABASE_URL</p>
             <p>4. Add VITE_SUPABASE_ANON_KEY</p>
@@ -199,7 +199,7 @@ export function CloudSync() {
           <GlassCard>
             <p className="font-display text-3xl font-semibold text-cream-100">Backup controls</p>
             <p className="mt-2 text-sm leading-6 text-cream-100/60">
-              Cloud sync stores memories and favorites in your Supabase database, while memory photos are saved privately in Supabase Storage.
+              Cloud sync stores one encrypted-at-rest JSON care package in your Supabase database under the signed-in user.
             </p>
 
             {notice ? (

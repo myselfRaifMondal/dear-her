@@ -6,3 +6,4 @@ dear-her-upgrade-mobile-app-polish.sh
 dear-her-upgrade-indexeddb-memories.sh
 dear-her-upgrade-mira-companion.sh
 dear-her-upgrade-supabase-sync.sh
+dear-her-upgrade-supabase-storage.sh
