@@ -1,34 +1,67 @@
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { AuroraBackground } from "./components/AuroraBackground";
+import { BreathingSpace } from "./components/BreathingSpace";
 import { ComfortDock } from "./components/ComfortDock";
 import { ComfortMessages } from "./components/ComfortMessages";
 import { ComfortRoom } from "./components/ComfortRoom";
 import { FavoriteThings } from "./components/FavoriteThings";
 import { FloatingParticles } from "./components/FloatingParticles";
 import { MoodCheckIn } from "./components/MoodCheckIn";
+import { PageTransition } from "./components/PageTransition";
 import { PersonalMemories } from "./components/PersonalMemories";
 import { RelaxationActivities } from "./components/RelaxationActivities";
 import { SettingsModal } from "./components/SettingsModal";
 import { Soundscapes } from "./components/Soundscapes";
 import { TopBar } from "./components/TopBar";
 import { Welcome } from "./components/Welcome";
-import { BreathingSpace } from "./components/BreathingSpace";
-import { loadFavorites, loadMemories, loadMood, loadSettings, saveFavorites, saveMemories, saveMood, saveSettings } from "./lib/storage";
-import { setAmbienceVolume, startAmbience, stopAmbience } from "./lib/ambientAudio";
 import { useSystemReducedMotion } from "./hooks/useReducedMotion";
+import { setAmbienceVolume, startAmbience, stopAmbience } from "./lib/ambientAudio";
+import {
+  loadFavorites,
+  loadMemories,
+  loadMood,
+  loadSettings,
+  saveFavorites,
+  saveMemories,
+  saveMood,
+  saveSettings,
+} from "./lib/storage";
 import type { EnvironmentId, FavoriteThing, Memory, Mood, Screen, UserSettings } from "./types/app";
 
-const pageTransition = {
-  initial: { opacity: 0, y: 14, filter: "blur(8px)" },
-  animate: { opacity: 1, y: 0, filter: "blur(0px)" },
-  exit: { opacity: 0, y: -10, filter: "blur(8px)" },
-  transition: { duration: 0.42, ease: [0.16, 1, 0.3, 1] },
-} as const;
+const screenToPath: Record<Screen, string> = {
+  welcome: "/",
+  mood: "/mood",
+  breathe: "/breathe",
+  room: "/room",
+  sounds: "/soundscapes",
+  memories: "/memories",
+  messages: "/messages",
+  favorites: "/favorites",
+  activities: "/activities",
+};
 
-export default function App() {
+function getScreenFromPath(pathname: string): Screen {
+  if (pathname === "/") return "welcome";
+  if (pathname.startsWith("/mood")) return "mood";
+  if (pathname.startsWith("/breathe")) return "breathe";
+  if (pathname.startsWith("/room")) return "room";
+  if (pathname.startsWith("/soundscapes")) return "sounds";
+  if (pathname.startsWith("/memories")) return "memories";
+  if (pathname.startsWith("/messages")) return "messages";
+  if (pathname.startsWith("/favorites")) return "favorites";
+  if (pathname.startsWith("/activities")) return "activities";
+  return "welcome";
+}
+
+function DearHerApp() {
+  const location = useLocation();
+  const navigateToPath = useNavigate();
   const systemReducedMotion = useSystemReducedMotion();
-  const [activeScreen, setActiveScreen] = useState<Screen>("welcome");
+
+  const activeScreen = getScreenFromPath(location.pathname);
+
   const [environment, setEnvironment] = useState<EnvironmentId>("rain");
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
   const [memories, setMemories] = useState<Memory[]>([]);
@@ -45,6 +78,7 @@ export default function App() {
     setMemories(loadMemories());
     setFavorites(loadFavorites());
     setSettings(loadSettings());
+
     const storedMood = loadMood();
     if (storedMood) setSelectedMood(storedMood as Mood);
   }, []);
@@ -56,6 +90,13 @@ export default function App() {
 
   const effectiveReducedMotion = systemReducedMotion || settings.reducedMotion;
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: effectiveReducedMotion ? "auto" : "smooth",
+    });
+  }, [location.pathname, effectiveReducedMotion]);
+
   const shellClasses = useMemo(
     () =>
       settings.reducedTransparency
@@ -65,8 +106,7 @@ export default function App() {
   );
 
   function navigate(screen: Screen): void {
-    setActiveScreen(screen);
-    window.scrollTo({ top: 0, behavior: effectiveReducedMotion ? "auto" : "smooth" });
+    navigateToPath(screenToPath[screen]);
   }
 
   function handleSelectMood(mood: Mood): void {
@@ -111,6 +151,7 @@ export default function App() {
 
   async function changeEnvironment(nextEnvironment: EnvironmentId): Promise<void> {
     setEnvironment(nextEnvironment);
+
     if (isAmbiencePlaying) {
       await startAmbience(nextEnvironment, settings.ambienceVolume);
     }
@@ -127,7 +168,11 @@ export default function App() {
     setFavorites([]);
     setSelectedMood(null);
     setIsAmbiencePlaying(false);
-    setSettings({ reducedMotion: false, reducedTransparency: false, ambienceVolume: 0.35 });
+    setSettings({
+      reducedMotion: false,
+      reducedTransparency: false,
+      ambienceVolume: 0.35,
+    });
   }
 
   useEffect(() => {
@@ -142,39 +187,104 @@ export default function App() {
 
       <main id="main-content">
         <AnimatePresence mode="wait">
-          <motion.div key={activeScreen} {...(effectiveReducedMotion ? {} : pageTransition)}>
-            {activeScreen === "welcome" ? <Welcome onNavigate={navigate} reducedMotion={effectiveReducedMotion} /> : null}
-            {activeScreen === "mood" ? <MoodCheckIn selectedMood={selectedMood} onSelectMood={handleSelectMood} onNavigate={navigate} /> : null}
-            {activeScreen === "breathe" ? <BreathingSpace reducedMotion={effectiveReducedMotion} onOpenRoom={() => navigate("room")} /> : null}
-            {activeScreen === "room" ? (
-              <ComfortRoom
-                environment={environment}
-                mood={selectedMood}
-                onChangeEnvironment={(next) => void changeEnvironment(next)}
-                onNavigate={navigate}
-                isAmbiencePlaying={isAmbiencePlaying}
-                onToggleAmbience={() => void toggleAmbience()}
-              />
-            ) : null}
-            {activeScreen === "sounds" ? (
-              <Soundscapes
-                environment={environment}
-                volume={settings.ambienceVolume}
-                isAmbiencePlaying={isAmbiencePlaying}
-                onEnvironmentChange={(next) => void changeEnvironment(next)}
-                onVolumeChange={(volume) => setSettings({ ...settings, ambienceVolume: volume })}
-                onToggleAmbience={() => void toggleAmbience()}
-              />
-            ) : null}
-            {activeScreen === "memories" ? (
-              <PersonalMemories memories={memories} onAddMemory={handleAddMemory} onDeleteMemory={handleDeleteMemory} />
-            ) : null}
-            {activeScreen === "messages" ? <ComfortMessages selectedMood={selectedMood} /> : null}
-            {activeScreen === "favorites" ? (
-              <FavoriteThings favorites={favorites} onAddFavorite={handleAddFavorite} onDeleteFavorite={handleDeleteFavorite} />
-            ) : null}
-            {activeScreen === "activities" ? <RelaxationActivities onNavigate={navigate} /> : null}
-          </motion.div>
+          <Routes location={location} key={location.pathname}>
+            <Route
+              path="/"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <Welcome onNavigate={navigate} reducedMotion={effectiveReducedMotion} />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/mood"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <MoodCheckIn selectedMood={selectedMood} onSelectMood={handleSelectMood} onNavigate={navigate} />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/breathe"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <BreathingSpace reducedMotion={effectiveReducedMotion} onOpenRoom={() => navigate("room")} />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/room"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <ComfortRoom
+                    environment={environment}
+                    mood={selectedMood}
+                    onChangeEnvironment={(next) => void changeEnvironment(next)}
+                    onNavigate={navigate}
+                    isAmbiencePlaying={isAmbiencePlaying}
+                    onToggleAmbience={() => void toggleAmbience()}
+                  />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/soundscapes"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <Soundscapes
+                    environment={environment}
+                    volume={settings.ambienceVolume}
+                    isAmbiencePlaying={isAmbiencePlaying}
+                    onEnvironmentChange={(next) => void changeEnvironment(next)}
+                    onVolumeChange={(volume) => setSettings({ ...settings, ambienceVolume: volume })}
+                    onToggleAmbience={() => void toggleAmbience()}
+                  />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/memories"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <PersonalMemories memories={memories} onAddMemory={handleAddMemory} onDeleteMemory={handleDeleteMemory} />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/messages"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <ComfortMessages selectedMood={selectedMood} />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/favorites"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <FavoriteThings favorites={favorites} onAddFavorite={handleAddFavorite} onDeleteFavorite={handleDeleteFavorite} />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/activities"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <RelaxationActivities onNavigate={navigate} />
+                </PageTransition>
+              }
+            />
+
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </AnimatePresence>
       </main>
 
@@ -188,5 +298,13 @@ export default function App() {
         onClearData={clearLocalData}
       />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <DearHerApp />
+    </BrowserRouter>
   );
 }

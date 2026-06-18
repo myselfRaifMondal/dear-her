@@ -152,13 +152,3 @@ textarea {
     transition-duration: 0.001ms !important;
   }
 }
-
-.comfort-dock {
-  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
-}
-
-@media (max-width: 520px) {
-  .comfort-dock {
-    border-radius: 1.5rem;
-  }
-}
