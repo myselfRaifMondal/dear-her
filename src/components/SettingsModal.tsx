@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { clearAnalytics, downloadAnalytics, readAnalytics } from "../lib/analytics";
 import {
   clearStoredFavorites,
   clearStoredMemories,
@@ -140,6 +141,33 @@ export function SettingsModal({ open, settings, onClose, onChangeSettings, onCle
             accept="application/json"
             onChange={(event) => void handleImport(event.currentTarget.files?.[0])}
           />
+        </div>
+
+
+        <div className="mt-5 rounded-3xl border border-white/10 bg-white/[0.045] p-5">
+          <p className="font-semibold text-cream-100">Local usage signals</p>
+          <p className="mt-2 text-sm leading-6 text-cream-100/60">
+            For MVP testing, Dear Her stores simple usage events only on this browser. Nothing is sent to a server.
+            Current local events: <span className="font-semibold text-cream-100">{readAnalytics().length}</span>.
+          </p>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <SoftButton variant="secondary" onClick={downloadAnalytics}>
+              Export analytics
+            </SoftButton>
+
+            <SoftButton
+              variant="secondary"
+              onClick={() =>
+                confirmAndRun("Clear local usage analytics from this browser?", () => {
+                  clearAnalytics();
+                  setNotice("Local analytics cleared.");
+                })
+              }
+            >
+              Clear analytics
+            </SoftButton>
+          </div>
         </div>
 
         <div className="mt-5 rounded-3xl border border-white/10 bg-white/[0.045] p-5">

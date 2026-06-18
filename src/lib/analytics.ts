@@ -1,0 +1,124 @@
+export type AnalyticsEventName =
+  | "page_view"
+  | "mood_selected"
+  | "memory_added"
+  | "memory_deleted"
+  | "favorite_added"
+  | "favorite_deleted"
+  | "ambience_started"
+  | "ambience_stopped"
+  | "environment_changed"
+  | "settings_opened"
+  | "data_exported"
+  | "analytics_cleared";
+
+export type AnalyticsEvent = {
+  id: string;
+  name: AnalyticsEventName;
+  createdAt: string;
+  path: string;
+  payload?: Record<string, string | number | boolean | null>;
+};
+
+const analyticsKey = "dear-her-mvp:analytics";
+const maxEvents = 500;
+
+function safeRead(): AnalyticsEvent[] {
+  try {
+    const raw = window.localStorage.getItem(analyticsKey);
+    return raw ? (JSON.parse(raw) as AnalyticsEvent[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function safeWrite(events: AnalyticsEvent[]): void {
+  try {
+    window.localStorage.setItem(analyticsKey, JSON.stringify(events.slice(-maxEvents)));
+  } catch {
+    // Analytics should never break the comfort experience.
+  }
+}
+
+export function trackEvent(
+  name: AnalyticsEventName,
+  payload?: Record<string, string | number | boolean | null>,
+): void {
+  if (typeof window === "undefined") return;
+
+  const event: AnalyticsEvent = {
+    id: crypto.randomUUID(),
+    name,
+    createdAt: new Date().toISOString(),
+    path: window.location.pathname,
+    payload,
+  };
+
+  safeWrite([...safeRead(), event]);
+}
+
+export function trackPageView(path: string, screen: string): void {
+  trackEvent("page_view", { path, screen });
+}
+
+export function readAnalytics(): AnalyticsEvent[] {
+  return safeRead();
+}
+
+export function clearAnalytics(): void {
+  window.localStorage.removeItem(analyticsKey);
+  trackEvent("analytics_cleared");
+}
+
+export function downloadAnalytics(): void {
+  const events = readAnalytics();
+
+  const blob = new Blob(
+    [
+      JSON.stringify(
+        {
+          product: "Dear Her",
+          type: "local_analytics",
+          exportedAt: new Date().toISOString(),
+          totalEvents: events.length,
+          events,
+        },
+        null,
+        2,
+      ),
+    ],
+    { type: "application/json" },
+  );
+
+  const url = window.URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+
+  anchor.href = url;
+  anchor.download = `dear-her-local-analytics-${new Date().toISOString().slice(0, 10)}.json`;
+
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+
+  window.URL.revokeObjectURL(url);
+
+  trackEvent("data_exported", { type: "analytics" });
+}
+
+declare global {
+  interface Window {
+    DearHerAnalytics?: {
+      read: typeof readAnalytics;
+      clear: typeof clearAnalytics;
+      download: typeof downloadAnalytics;
+    };
+  }
+}
+
+if (typeof window !== "undefined") {
+  window.DearHerAnalytics = {
+    read: readAnalytics,
+    clear: clearAnalytics,
+    download: downloadAnalytics,
+  };
+}

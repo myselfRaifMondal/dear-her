@@ -18,6 +18,7 @@ import { TopBar } from "./components/TopBar";
 import { Welcome } from "./components/Welcome";
 import { useSystemReducedMotion } from "./hooks/useReducedMotion";
 import { setAmbienceVolume, startAmbience, stopAmbience } from "./lib/ambientAudio";
+import { trackEvent, trackPageView } from "./lib/analytics";
 import {
   loadFavorites,
   loadMemories,
@@ -84,6 +85,10 @@ function DearHerApp() {
   }, []);
 
   useEffect(() => {
+    trackPageView(location.pathname, activeScreen);
+  }, [location.pathname, activeScreen]);
+
+  useEffect(() => {
     saveSettings(settings);
     setAmbienceVolume(settings.ambienceVolume);
   }, [settings]);
@@ -112,45 +117,53 @@ function DearHerApp() {
   function handleSelectMood(mood: Mood): void {
     setSelectedMood(mood);
     saveMood(mood);
+    trackEvent("mood_selected", { mood });
   }
 
   function handleAddMemory(memory: Memory): void {
     const updated = [memory, ...memories];
     setMemories(updated);
     saveMemories(updated);
+    trackEvent("memory_added", { totalMemories: updated.length });
   }
 
   function handleDeleteMemory(id: string): void {
     const updated = memories.filter((memory) => memory.id !== id);
     setMemories(updated);
     saveMemories(updated);
+    trackEvent("memory_deleted", { totalMemories: updated.length });
   }
 
   function handleAddFavorite(favorite: FavoriteThing): void {
     const updated = [favorite, ...favorites];
     setFavorites(updated);
     saveFavorites(updated);
+    trackEvent("favorite_added", { kind: favorite.kind, totalFavorites: updated.length });
   }
 
   function handleDeleteFavorite(id: string): void {
     const updated = favorites.filter((favorite) => favorite.id !== id);
     setFavorites(updated);
     saveFavorites(updated);
+    trackEvent("favorite_deleted", { totalFavorites: updated.length });
   }
 
   async function toggleAmbience(): Promise<void> {
     if (isAmbiencePlaying) {
       stopAmbience();
       setIsAmbiencePlaying(false);
+      trackEvent("ambience_stopped", { environment });
       return;
     }
 
     await startAmbience(environment, settings.ambienceVolume);
     setIsAmbiencePlaying(true);
+    trackEvent("ambience_started", { environment, volume: settings.ambienceVolume });
   }
 
   async function changeEnvironment(nextEnvironment: EnvironmentId): Promise<void> {
     setEnvironment(nextEnvironment);
+    trackEvent("environment_changed", { environment: nextEnvironment });
 
     if (isAmbiencePlaying) {
       await startAmbience(nextEnvironment, settings.ambienceVolume);
@@ -183,7 +196,12 @@ function DearHerApp() {
     <div className={`min-h-screen text-cream-100 ${shellClasses}`}>
       <AuroraBackground environment={environment} reducedMotion={effectiveReducedMotion} />
       <FloatingParticles reducedMotion={effectiveReducedMotion} />
-      <TopBar onOpenSettings={() => setSettingsOpen(true)} />
+      <TopBar
+        onOpenSettings={() => {
+          setSettingsOpen(true);
+          trackEvent("settings_opened");
+        }}
+      />
 
       <main id="main-content">
         <AnimatePresence mode="wait">
