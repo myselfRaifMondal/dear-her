@@ -26,8 +26,8 @@ export function PersonalMemories({ memories, onAddMemory, onDeleteMemory }: Pers
       return;
     }
 
-    if (file.size > 8_000_000) {
-      setError("Choose an image below 8 MB for this version.");
+    if (file.size > 1_400_000) {
+      setError("Choose an image below 1.4 MB for this local MVP.");
       return;
     }
 

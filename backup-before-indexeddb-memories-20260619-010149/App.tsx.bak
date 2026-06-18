@@ -22,16 +22,12 @@ import { useSystemReducedMotion } from "./hooks/useReducedMotion";
 import { setAmbienceVolume, startAmbience, stopAmbience } from "./lib/ambientAudio";
 import { trackEvent, trackPageView } from "./lib/analytics";
 import {
-  addMemory as addStoredMemory,
-  clearMemoryStorage,
-  deleteMemory as deleteStoredMemory,
-  loadMemories as loadStoredMemories,
-} from "./lib/memoryStorage";
-import {
   loadFavorites,
+  loadMemories,
   loadMood,
   loadSettings,
   saveFavorites,
+  saveMemories,
   saveMood,
   saveSettings,
 } from "./lib/storage";
@@ -82,7 +78,7 @@ function DearHerApp() {
   const [isAmbiencePlaying, setIsAmbiencePlaying] = useState(false);
 
   useEffect(() => {
-    void loadStoredMemories().then(setMemories);
+    setMemories(loadMemories());
     setFavorites(loadFavorites());
     setSettings(loadSettings());
 
@@ -127,17 +123,17 @@ function DearHerApp() {
   }
 
   function handleAddMemory(memory: Memory): void {
-    void addStoredMemory(memory).then((updated) => {
-      setMemories(updated);
-      trackEvent("memory_added", { totalMemories: updated.length });
-    });
+    const updated = [memory, ...memories];
+    setMemories(updated);
+    saveMemories(updated);
+    trackEvent("memory_added", { totalMemories: updated.length });
   }
 
   function handleDeleteMemory(id: string): void {
-    void deleteStoredMemory(id).then((updated) => {
-      setMemories(updated);
-      trackEvent("memory_deleted", { totalMemories: updated.length });
-    });
+    const updated = memories.filter((memory) => memory.id !== id);
+    setMemories(updated);
+    saveMemories(updated);
+    trackEvent("memory_deleted", { totalMemories: updated.length });
   }
 
   function handleAddFavorite(favorite: FavoriteThing): void {
@@ -182,7 +178,6 @@ function DearHerApp() {
 
   function clearLocalData(): void {
     stopAmbience();
-    void clearMemoryStorage();
     window.localStorage.clear();
     setMemories([]);
     setFavorites([]);

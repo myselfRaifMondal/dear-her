@@ -1,10 +1,11 @@
 import { useRef, useState } from "react";
 import { clearAnalytics, downloadAnalytics, readAnalytics } from "../lib/analytics";
-import { downloadLocalData, importLocalDataFromFile } from "../lib/dataPortability";
-import { clearMemoryStorage } from "../lib/memoryStorage";
 import {
   clearStoredFavorites,
+  clearStoredMemories,
   clearStoredMood,
+  downloadLocalData,
+  importLocalDataFromFile,
 } from "../lib/storage";
 import type { UserSettings } from "../types/app";
 import { GlassCard } from "./GlassCard";
@@ -40,10 +41,10 @@ export function SettingsModal({ open, settings, onClose, onChangeSettings, onCle
     }
   }
 
-  function confirmAndRun(message: string, action: () => void | Promise<void>): void {
+  function confirmAndRun(message: string, action: () => void): void {
     const confirmed = window.confirm(message);
     if (!confirmed) return;
-    void action();
+    action();
   }
 
   return (
@@ -124,7 +125,7 @@ export function SettingsModal({ open, settings, onClose, onChangeSettings, onCle
           </p>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            <SoftButton variant="secondary" onClick={() => void downloadLocalData()}>
+            <SoftButton variant="secondary" onClick={downloadLocalData}>
               Export my data
             </SoftButton>
 
@@ -179,8 +180,8 @@ export function SettingsModal({ open, settings, onClose, onChangeSettings, onCle
             <SoftButton
               variant="secondary"
               onClick={() =>
-                confirmAndRun("Clear saved memories from this browser?", async () => {
-                  await clearMemoryStorage();
+                confirmAndRun("Clear saved memories from this browser?", () => {
+                  clearStoredMemories();
                   setNotice("Memories cleared. Refreshing...");
                   reloadAfterLocalChange();
                 })
