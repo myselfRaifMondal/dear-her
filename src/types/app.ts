@@ -1,0 +1,43 @@
+export type Screen =
+  | "welcome"
+  | "breathe"
+  | "room"
+  | "sounds"
+  | "memories"
+  | "mood"
+  | "messages"
+  | "favorites"
+  | "activities";
+
+export type Mood =
+  | "Tender"
+  | "Heavy"
+  | "Tired"
+  | "Irritated"
+  | "Low"
+  | "Need comfort"
+  | "Need silence";
+
+export type EnvironmentId = "rain" | "forest" | "ocean" | "fireplace" | "night";
+
+export type Memory = {
+  id: string;
+  title: string;
+  caption: string;
+  imageDataUrl: string;
+  createdAt: string;
+};
+
+export type FavoriteThing = {
+  id: string;
+  kind: "song" | "quote" | "movie" | "snack" | "person" | "ritual";
+  title: string;
+  note: string;
+  createdAt: string;
+};
+
+export type UserSettings = {
+  reducedMotion: boolean;
+  reducedTransparency: boolean;
+  ambienceVolume: number;
+};
