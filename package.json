@@ -12,6 +12,7 @@
   "dependencies": {
     "@tailwindcss/vite": "latest",
     "@vitejs/plugin-react": "latest",
+    "howler": "^2.2.4",
     "motion": "latest",
     "react": "latest",
     "react-dom": "latest",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@eslint/js": "latest",
+    "@types/howler": "^2.2.13",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "eslint": "latest",

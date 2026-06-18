@@ -1,3 +1,11 @@
+import { useRef, useState } from "react";
+import {
+  clearStoredFavorites,
+  clearStoredMemories,
+  clearStoredMood,
+  downloadLocalData,
+  importLocalDataFromFile,
+} from "../lib/storage";
 import type { UserSettings } from "../types/app";
 import { GlassCard } from "./GlassCard";
 import { SoftButton } from "./SoftButton";
@@ -10,11 +18,41 @@ type SettingsModalProps = {
   onClearData: () => void;
 };
 
+function reloadAfterLocalChange(): void {
+  window.setTimeout(() => window.location.reload(), 350);
+}
+
 export function SettingsModal({ open, settings, onClose, onChangeSettings, onClearData }: SettingsModalProps) {
+  const importInputRef = useRef<HTMLInputElement | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+
   if (!open) return null;
 
+  async function handleImport(file: File | undefined): Promise<void> {
+    if (!file) return;
+
+    try {
+      await importLocalDataFromFile(file);
+      setNotice("Care package imported. Refreshing your sanctuary...");
+      reloadAfterLocalChange();
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not import this file.");
+    }
+  }
+
+  function confirmAndRun(message: string, action: () => void): void {
+    const confirmed = window.confirm(message);
+    if (!confirmed) return;
+    action();
+  }
+
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/70 px-5 py-8 backdrop-blur-xl" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <div
+      className="fixed inset-0 z-50 grid place-items-center bg-slate-950/70 px-5 py-8 backdrop-blur-xl"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="settings-title"
+    >
       <GlassCard className="max-h-[90vh] w-full max-w-2xl overflow-auto p-6 sm:p-8">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -23,10 +61,17 @@ export function SettingsModal({ open, settings, onClose, onChangeSettings, onCle
               Make the sanctuary gentler.
             </h2>
           </div>
+
           <SoftButton variant="ghost" onClick={onClose} aria-label="Close settings">
             Close
           </SoftButton>
         </div>
+
+        {notice ? (
+          <div className="mt-6 rounded-3xl border border-rose-200/20 bg-rose-200/[0.08] p-4 text-sm leading-6 text-cream-100/75">
+            {notice}
+          </div>
+        ) : null}
 
         <div className="mt-8 space-y-5">
           <label className="flex items-center justify-between gap-4 rounded-3xl border border-white/10 bg-white/[0.045] p-4 text-cream-100">
@@ -71,14 +116,90 @@ export function SettingsModal({ open, settings, onClose, onChangeSettings, onCle
           </label>
         </div>
 
-        <div className="mt-8 rounded-3xl border border-rose-200/20 bg-rose-200/[0.08] p-4">
-          <p className="font-semibold text-cream-100">Local MVP privacy</p>
-          <p className="mt-2 text-sm leading-6 text-cream-100/60">
-            Memories and favorites are stored only in this browser using localStorage. Clearing data removes them from this device.
+        <div className="mt-8 rounded-3xl border border-rose-200/20 bg-rose-200/[0.08] p-5">
+          <p className="font-semibold text-cream-100">Private care package</p>
+          <p className="mt-2 text-sm leading-6 text-cream-100/65">
+            Your memories, favorites, mood, and settings are stored only in this browser for the MVP. Export them before clearing your
+            browser data.
           </p>
-          <SoftButton variant="secondary" className="mt-4" onClick={onClearData}>
-            Clear local data
-          </SoftButton>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <SoftButton variant="secondary" onClick={downloadLocalData}>
+              Export my data
+            </SoftButton>
+
+            <SoftButton variant="secondary" onClick={() => importInputRef.current?.click()}>
+              Import data
+            </SoftButton>
+          </div>
+
+          <input
+            ref={importInputRef}
+            className="hidden"
+            type="file"
+            accept="application/json"
+            onChange={(event) => void handleImport(event.currentTarget.files?.[0])}
+          />
+        </div>
+
+        <div className="mt-5 rounded-3xl border border-white/10 bg-white/[0.045] p-5">
+          <p className="font-semibold text-cream-100">Clear local data</p>
+          <p className="mt-2 text-sm leading-6 text-cream-100/60">
+            Use these when you want the sanctuary to feel private again on this device.
+          </p>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <SoftButton
+              variant="secondary"
+              onClick={() =>
+                confirmAndRun("Clear saved memories from this browser?", () => {
+                  clearStoredMemories();
+                  setNotice("Memories cleared. Refreshing...");
+                  reloadAfterLocalChange();
+                })
+              }
+            >
+              Clear memories
+            </SoftButton>
+
+            <SoftButton
+              variant="secondary"
+              onClick={() =>
+                confirmAndRun("Clear saved favorite things from this browser?", () => {
+                  clearStoredFavorites();
+                  setNotice("Favorites cleared. Refreshing...");
+                  reloadAfterLocalChange();
+                })
+              }
+            >
+              Clear favorites
+            </SoftButton>
+
+            <SoftButton
+              variant="secondary"
+              onClick={() =>
+                confirmAndRun("Clear your saved mood from this browser?", () => {
+                  clearStoredMood();
+                  setNotice("Mood cleared. Refreshing...");
+                  reloadAfterLocalChange();
+                })
+              }
+            >
+              Clear mood
+            </SoftButton>
+
+            <SoftButton
+              variant="secondary"
+              onClick={() =>
+                confirmAndRun("Clear everything saved by Dear Her on this browser?", () => {
+                  onClearData();
+                  setNotice("All local Dear Her data cleared.");
+                })
+              }
+            >
+              Clear everything
+            </SoftButton>
+          </div>
         </div>
       </GlassCard>
     </div>

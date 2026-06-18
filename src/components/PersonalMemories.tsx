@@ -18,13 +18,16 @@ export function PersonalMemories({ memories, onAddMemory, onDeleteMemory }: Pers
 
   function handleFile(file: File | undefined): void {
     setError(null);
+
     if (!file) return;
+
     if (!file.type.startsWith("image/")) {
-      setError("Please choose an image file.");
+      setError("Choose a photo or image file.");
       return;
     }
-    if (file.size > 1_200_000) {
-      setError("Choose an image below 1.2 MB for this local MVP.");
+
+    if (file.size > 1_400_000) {
+      setError("Choose an image below 1.4 MB for this local MVP.");
       return;
     }
 
@@ -52,6 +55,7 @@ export function PersonalMemories({ memories, onAddMemory, onDeleteMemory }: Pers
     setCaption("");
     setImageDataUrl(null);
     setError(null);
+
     if (fileRef.current) fileRef.current.value = "";
   }
 
@@ -63,13 +67,17 @@ export function PersonalMemories({ memories, onAddMemory, onDeleteMemory }: Pers
           Keep a soft moment here.
         </h2>
         <p className="mt-5 leading-7 text-cream-100/70">
-          Add a photo and a small note that reminds you life can still feel gentle. Stored only in this browser for the MVP.
+          Add a photo and a small note that reminds you life can still feel gentle. This is your private care corner on this device.
         </p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
         <GlassCard className="h-fit">
           <h3 className="font-display text-3xl font-semibold text-cream-100">Add memory</h3>
+          <p className="mt-2 text-sm leading-6 text-cream-100/60">
+            Choose something that feels safe, warm, funny, loving, or quietly beautiful.
+          </p>
+
           <div className="mt-5 space-y-4">
             <label className="block text-sm font-semibold text-cream-100/70">
               Photo
@@ -81,9 +89,15 @@ export function PersonalMemories({ memories, onAddMemory, onDeleteMemory }: Pers
                 onChange={(event) => handleFile(event.currentTarget.files?.[0])}
               />
             </label>
+
             {imageDataUrl ? (
               <img className="h-56 w-full rounded-3xl object-cover" src={imageDataUrl} alt="Selected memory preview" />
-            ) : null}
+            ) : (
+              <div className="grid h-44 place-items-center rounded-3xl border border-dashed border-white/15 bg-white/[0.035] px-6 text-center text-sm leading-6 text-cream-100/55">
+                A soft photo preview will appear here.
+              </div>
+            )}
+
             <label className="block text-sm font-semibold text-cream-100/70">
               Title
               <input
@@ -93,6 +107,7 @@ export function PersonalMemories({ memories, onAddMemory, onDeleteMemory }: Pers
                 placeholder="A good day, a safe place..."
               />
             </label>
+
             <label className="block text-sm font-semibold text-cream-100/70">
               Caption
               <textarea
@@ -102,7 +117,9 @@ export function PersonalMemories({ memories, onAddMemory, onDeleteMemory }: Pers
                 placeholder="Why does this moment feel soft?"
               />
             </label>
+
             {error ? <p className="rounded-2xl bg-rose-300/10 p-3 text-sm text-rose-100">{error}</p> : null}
+
             <SoftButton className="w-full" onClick={submitMemory}>
               Save memory
             </SoftButton>
@@ -112,10 +129,21 @@ export function PersonalMemories({ memories, onAddMemory, onDeleteMemory }: Pers
         <div className="grid gap-5 sm:grid-cols-2">
           {memories.length === 0 ? (
             <GlassCard className="sm:col-span-2">
-              <p className="font-display text-3xl font-semibold text-cream-100">Your memory room is empty for now.</p>
-              <p className="mt-3 leading-7 text-cream-100/60">
-                Add one soft photo when you are ready. Even a tiny happy moment counts.
-              </p>
+              <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-rose-200/[0.12] via-white/[0.045] to-lavender-200/[0.10] p-6 sm:p-8">
+                <p className="font-display text-4xl font-semibold text-cream-100">Your memory room is waiting softly.</p>
+                <p className="mt-4 max-w-2xl leading-7 text-cream-100/65">
+                  You do not need a perfect photo. Start with one tiny proof that comfort exists: a sky, a meal, a person, a pet, a
+                  place, a mirror selfie, a moment when the day felt less heavy.
+                </p>
+
+                <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                  {["A safe place", "A loved person", "A softer day"].map((item) => (
+                    <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.05] p-4 text-sm font-semibold text-cream-100/75">
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </GlassCard>
           ) : (
             memories.map((memory) => (

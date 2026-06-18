@@ -11,6 +11,15 @@ type FavoriteThingsProps = {
 
 const kinds: FavoriteThing["kind"][] = ["song", "quote", "movie", "snack", "person", "ritual"];
 
+const starterIdeas = [
+  "A song that feels like a hug",
+  "A quote she needs on low days",
+  "A movie that feels safe",
+  "A tiny ritual before sleep",
+  "A person who feels calming",
+  "A snack or drink that comforts",
+];
+
 export function FavoriteThings({ favorites, onAddFavorite, onDeleteFavorite }: FavoriteThingsProps) {
   const [kind, setKind] = useState<FavoriteThing["kind"]>("quote");
   const [title, setTitle] = useState("");
@@ -18,6 +27,7 @@ export function FavoriteThings({ favorites, onAddFavorite, onDeleteFavorite }: F
 
   function addFavorite(): void {
     if (!title.trim()) return;
+
     onAddFavorite({
       id: crypto.randomUUID(),
       kind,
@@ -25,6 +35,7 @@ export function FavoriteThings({ favorites, onAddFavorite, onDeleteFavorite }: F
       note: note.trim() || "A small thing that feels comforting.",
       createdAt: new Date().toISOString(),
     });
+
     setTitle("");
     setNote("");
   }
@@ -44,6 +55,10 @@ export function FavoriteThings({ favorites, onAddFavorite, onDeleteFavorite }: F
       <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
         <GlassCard className="h-fit">
           <h3 className="font-display text-3xl font-semibold text-cream-100">Add favorite</h3>
+          <p className="mt-2 text-sm leading-6 text-cream-100/60">
+            Add one small thing she can return to when the day feels heavy.
+          </p>
+
           <div className="mt-5 space-y-4">
             <div className="flex flex-wrap gap-2">
               {kinds.map((item) => (
@@ -58,6 +73,7 @@ export function FavoriteThings({ favorites, onAddFavorite, onDeleteFavorite }: F
                 </button>
               ))}
             </div>
+
             <label className="block text-sm font-semibold text-cream-100/70">
               Title
               <input
@@ -67,6 +83,7 @@ export function FavoriteThings({ favorites, onAddFavorite, onDeleteFavorite }: F
                 placeholder="A song, quote, movie, person..."
               />
             </label>
+
             <label className="block text-sm font-semibold text-cream-100/70">
               Note
               <textarea
@@ -76,6 +93,7 @@ export function FavoriteThings({ favorites, onAddFavorite, onDeleteFavorite }: F
                 placeholder="Why does this comfort you?"
               />
             </label>
+
             <SoftButton className="w-full" onClick={addFavorite} disabled={!title.trim()}>
               Save favorite
             </SoftButton>
@@ -85,8 +103,25 @@ export function FavoriteThings({ favorites, onAddFavorite, onDeleteFavorite }: F
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {favorites.length === 0 ? (
             <GlassCard className="sm:col-span-2 xl:col-span-3">
-              <p className="font-display text-3xl font-semibold text-cream-100">Nothing saved yet.</p>
-              <p className="mt-3 leading-7 text-cream-100/60">Start with one quote, one song, or one tiny ritual that feels like care.</p>
+              <p className="font-display text-4xl font-semibold text-cream-100">Start with one gentle thing.</p>
+              <p className="mt-3 max-w-2xl leading-7 text-cream-100/65">
+                This space becomes more powerful when it feels specific. Add anything that would make her think: “this was made for me.”
+              </p>
+
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                {starterIdeas.map((idea) => (
+                  <button
+                    key={idea}
+                    className="rounded-3xl border border-white/10 bg-white/[0.045] p-4 text-left text-sm font-semibold leading-6 text-cream-100/75 transition hover:bg-white/[0.08]"
+                    onClick={() => {
+                      setTitle(idea);
+                      setNote("");
+                    }}
+                  >
+                    {idea}
+                  </button>
+                ))}
+              </div>
             </GlassCard>
           ) : (
             favorites.map((favorite) => (

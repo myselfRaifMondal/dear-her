@@ -1,4 +1,5 @@
 import { environments } from "../data/content";
+import { getRequiredSoundFiles } from "../lib/ambientAudio";
 import type { EnvironmentId } from "../types/app";
 import { GlassCard } from "./GlassCard";
 import { SoftButton } from "./SoftButton";
@@ -11,6 +12,8 @@ type SoundscapesProps = {
   onVolumeChange: (volume: number) => void;
   onToggleAmbience: () => void;
 };
+
+const requiredSoundFiles = getRequiredSoundFiles();
 
 export function Soundscapes({
   environment,
@@ -28,13 +31,30 @@ export function Soundscapes({
           Let the room sound softer.
         </h2>
         <p className="mt-5 leading-7 text-cream-100/70">
-          This MVP uses gentle browser-generated ambience, so it works without downloading audio files first.
+          Dear Her now supports real looped ambience files. If a sound file is missing, the app quietly falls back to a generated
+          soft ambience so the experience never breaks.
         </p>
       </div>
+
+      <GlassCard className="mb-6 border-rose-200/20 bg-rose-200/[0.07]">
+        <p className="font-semibold text-cream-100">Real audio checklist</p>
+        <p className="mt-2 text-sm leading-6 text-cream-100/65">
+          Add licensed MP3 files inside <span className="font-semibold text-cream-100">public/sounds</span> using these exact names.
+        </p>
+        <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {Object.entries(requiredSoundFiles).map(([key, path]) => (
+            <div key={key} className="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3 text-sm text-cream-100/75">
+              <span className="font-semibold capitalize text-cream-100">{key}</span>
+              <span className="mt-1 block text-cream-100/55">{path}</span>
+            </div>
+          ))}
+        </div>
+      </GlassCard>
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {environments.map((item) => {
           const active = item.id === environment;
+
           return (
             <GlassCard key={item.id} className={`transition duration-300 ${active ? "ring-1 ring-cream-100/50" : ""}`}>
               <div className={`mb-5 h-36 rounded-[1.5rem] bg-gradient-to-br ${item.palette} shadow-inner`} />
@@ -55,6 +75,7 @@ export function Soundscapes({
           <p className="font-semibold text-cream-100">Ambience mixer</p>
           <p className="mt-1 text-sm text-cream-100/60">Start audio from a user tap, then adjust softness.</p>
         </div>
+
         <div className="flex flex-1 flex-col gap-4 sm:max-w-lg sm:flex-row sm:items-center">
           <label className="flex flex-1 items-center gap-3 text-sm font-semibold text-cream-100/70">
             Volume
@@ -69,7 +90,8 @@ export function Soundscapes({
               aria-label="Ambience volume"
             />
           </label>
-          <SoftButton onClick={onToggleAmbience}>{isAmbiencePlaying ? "Pause" : "Play"}</SoftButton>
+
+          <SoftButton onClick={onToggleAmbience}>{isAmbiencePlaying ? "Pause" : "Play ambience"}</SoftButton>
         </div>
       </GlassCard>
     </section>
