@@ -8,8 +8,6 @@ export type AnalyticsEventName =
   | "ambience_started"
   | "ambience_stopped"
   | "environment_changed"
-  | "mira_message_sent"
-  | "mira_suggestion_used"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";

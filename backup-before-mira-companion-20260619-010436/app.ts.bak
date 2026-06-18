@@ -6,7 +6,6 @@ export type Screen =
   | "memories"
   | "mood"
   | "messages"
-  | "mira"
   | "favorites"
   | "activities";
 

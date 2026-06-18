@@ -10,7 +10,6 @@ import { ComfortRoom } from "./components/ComfortRoom";
 import { FavoriteThings } from "./components/FavoriteThings";
 import { FloatingParticles } from "./components/FloatingParticles";
 import { InstallPrompt } from "./components/InstallPrompt";
-import { MiraCompanion } from "./components/MiraCompanion";
 import { MoodCheckIn } from "./components/MoodCheckIn";
 import { PageTransition } from "./components/PageTransition";
 import { PersonalMemories } from "./components/PersonalMemories";
@@ -46,7 +45,6 @@ const screenToPath: Record<Screen, string> = {
   sounds: "/soundscapes",
   memories: "/memories",
   messages: "/messages",
-  mira: "/mira",
   favorites: "/favorites",
   activities: "/activities",
 };
@@ -59,7 +57,6 @@ function getScreenFromPath(pathname: string): Screen {
   if (pathname.startsWith("/soundscapes")) return "sounds";
   if (pathname.startsWith("/memories")) return "memories";
   if (pathname.startsWith("/messages")) return "messages";
-  if (pathname.startsWith("/mira")) return "mira";
   if (pathname.startsWith("/favorites")) return "favorites";
   if (pathname.startsWith("/activities")) return "activities";
   return "welcome";
@@ -290,15 +287,6 @@ function DearHerApp() {
               element={
                 <PageTransition reducedMotion={effectiveReducedMotion}>
                   <ComfortMessages selectedMood={selectedMood} />
-                </PageTransition>
-              }
-            />
-
-            <Route
-              path="/mira"
-              element={
-                <PageTransition reducedMotion={effectiveReducedMotion}>
-                  <MiraCompanion selectedMood={selectedMood} onNavigate={navigate} />
                 </PageTransition>
               }
             />
