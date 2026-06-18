@@ -1,7 +1,6 @@
 import { AnimatePresence } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { AppSplash } from "./components/AppSplash";
 import { AuroraBackground } from "./components/AuroraBackground";
 import { BreathingSpace } from "./components/BreathingSpace";
 import { ComfortDock } from "./components/ComfortDock";
@@ -9,7 +8,6 @@ import { ComfortMessages } from "./components/ComfortMessages";
 import { ComfortRoom } from "./components/ComfortRoom";
 import { FavoriteThings } from "./components/FavoriteThings";
 import { FloatingParticles } from "./components/FloatingParticles";
-import { InstallPrompt } from "./components/InstallPrompt";
 import { MoodCheckIn } from "./components/MoodCheckIn";
 import { PageTransition } from "./components/PageTransition";
 import { PersonalMemories } from "./components/PersonalMemories";
@@ -198,7 +196,6 @@ function DearHerApp() {
     <div className={`min-h-screen text-cream-100 ${shellClasses}`}>
       <AuroraBackground environment={environment} reducedMotion={effectiveReducedMotion} />
       <FloatingParticles reducedMotion={effectiveReducedMotion} />
-      <AppSplash reducedMotion={effectiveReducedMotion} />
       <TopBar
         onOpenSettings={() => {
           setSettingsOpen(true);
@@ -310,8 +307,6 @@ function DearHerApp() {
       </main>
 
       {activeScreen !== "welcome" ? <ComfortDock activeScreen={activeScreen} onChangeScreen={navigate} /> : null}
-
-      <InstallPrompt />
 
       <SettingsModal
         open={settingsOpen}
