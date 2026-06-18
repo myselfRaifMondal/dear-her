@@ -7,7 +7,6 @@ import { BreathingSpace } from "./components/BreathingSpace";
 import { ComfortDock } from "./components/ComfortDock";
 import { ComfortMessages } from "./components/ComfortMessages";
 import { ComfortRoom } from "./components/ComfortRoom";
-import { CloudSync } from "./components/CloudSync";
 import { FavoriteThings } from "./components/FavoriteThings";
 import { FloatingParticles } from "./components/FloatingParticles";
 import { InstallPrompt } from "./components/InstallPrompt";
@@ -48,7 +47,6 @@ const screenToPath: Record<Screen, string> = {
   memories: "/memories",
   messages: "/messages",
   mira: "/mira",
-  sync: "/sync",
   favorites: "/favorites",
   activities: "/activities",
 };
@@ -62,7 +60,6 @@ function getScreenFromPath(pathname: string): Screen {
   if (pathname.startsWith("/memories")) return "memories";
   if (pathname.startsWith("/messages")) return "messages";
   if (pathname.startsWith("/mira")) return "mira";
-  if (pathname.startsWith("/sync")) return "sync";
   if (pathname.startsWith("/favorites")) return "favorites";
   if (pathname.startsWith("/activities")) return "activities";
   return "welcome";
@@ -302,15 +299,6 @@ function DearHerApp() {
               element={
                 <PageTransition reducedMotion={effectiveReducedMotion}>
                   <MiraCompanion selectedMood={selectedMood} onNavigate={navigate} />
-                </PageTransition>
-              }
-            />
-
-            <Route
-              path="/sync"
-              element={
-                <PageTransition reducedMotion={effectiveReducedMotion}>
-                  <CloudSync />
                 </PageTransition>
               }
             />

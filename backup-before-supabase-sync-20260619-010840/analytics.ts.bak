@@ -10,12 +10,6 @@ export type AnalyticsEventName =
   | "environment_changed"
   | "mira_message_sent"
   | "mira_suggestion_used"
-  | "cloud_magic_link_sent"
-  | "cloud_signed_out"
-  | "cloud_backup_saved"
-  | "cloud_backup_checked"
-  | "cloud_backup_restored"
-  | "cloud_backup_deleted"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";

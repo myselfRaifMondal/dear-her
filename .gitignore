@@ -5,3 +5,4 @@ dear-her-upgrade-pwa-analytics.sh
 dear-her-upgrade-mobile-app-polish.sh
 dear-her-upgrade-indexeddb-memories.sh
 dear-her-upgrade-mira-companion.sh
+dear-her-upgrade-supabase-sync.sh

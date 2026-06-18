@@ -10,6 +10,7 @@
     "lint": "eslint . --max-warnings=0"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.108.2",
     "@tailwindcss/vite": "latest",
     "@vitejs/plugin-react": "latest",
     "howler": "^2.2.4",
