@@ -72,13 +72,6 @@ export type AnalyticsEventName =
   | "room_sound_changed"
   | "room_grounding_action_clicked"
   | "room_mira_prompt_clicked"
-  | "breathe_decompression_loaded"
-  | "breathe_session_started"
-  | "breathe_session_paused"
-  | "breathe_session_completed"
-  | "breathe_pattern_changed"
-  | "breathe_duration_changed"
-  | "breathe_aftercare_clicked"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";

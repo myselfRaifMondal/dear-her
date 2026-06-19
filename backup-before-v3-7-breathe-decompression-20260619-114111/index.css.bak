@@ -447,26 +447,3 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
-
-/* Dear Her v3.7 Breathe Decompression */
-.breathe-orb-soft {
-  animation: breatheOrbSoft 8s ease-in-out infinite;
-}
-
-@keyframes breatheOrbSoft {
-  0%, 100% {
-    filter: blur(0);
-    opacity: 0.82;
-  }
-
-  50% {
-    filter: blur(1px);
-    opacity: 1;
-  }
-}
-
-@media (max-width: 640px) {
-  .breathe-mobile-orb {
-    transform: scale(0.9);
-  }
-}
