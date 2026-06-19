@@ -12,8 +12,6 @@ import { CloudSync } from "./components/CloudSync";
 import { FavoriteThings } from "./components/FavoriteThings";
 import { Feedback } from "./components/Feedback";
 import { FloatingParticles } from "./components/FloatingParticles";
-import { FounderGate } from "./components/FounderGate";
-import { FounderModePanel } from "./components/FounderModePanel";
 import { InstallPrompt } from "./components/InstallPrompt";
 import { Insights } from "./components/Insights";
 import { MiraCompanion } from "./components/MiraCompanion";
@@ -28,7 +26,6 @@ import { Soundscapes } from "./components/Soundscapes";
 import { TopBar } from "./components/TopBar";
 import { ToastProvider } from "./components/ToastProvider";
 import { Welcome } from "./components/Welcome";
-import { useFounderMode } from "./hooks/useFounderMode";
 import { useSystemReducedMotion } from "./hooks/useReducedMotion";
 import { setAmbienceVolume, startAmbience, stopAmbience } from "./lib/ambientAudio";
 import { trackEvent, trackPageView } from "./lib/analytics";
@@ -85,7 +82,6 @@ function DearHerApp() {
   const location = useLocation();
   const navigateToPath = useNavigate();
   const systemReducedMotion = useSystemReducedMotion();
-  const { founderMode, enableFounderMode, disableFounder } = useFounderMode();
 
   const activeScreen = getScreenFromPath(location.pathname);
 
@@ -343,9 +339,7 @@ function DearHerApp() {
               path="/feedback"
               element={
                 <PageTransition reducedMotion={effectiveReducedMotion}>
-                  <FounderGate enabled={founderMode} onUnlock={enableFounderMode}>
-                    <Feedback />
-                  </FounderGate>
+                  <Feedback />
                 </PageTransition>
               }
             />
@@ -354,9 +348,7 @@ function DearHerApp() {
               path="/insights"
               element={
                 <PageTransition reducedMotion={effectiveReducedMotion}>
-                  <FounderGate enabled={founderMode} onUnlock={enableFounderMode}>
-                    <Insights />
-                  </FounderGate>
+                  <Insights />
                 </PageTransition>
               }
             />
@@ -382,15 +374,9 @@ function DearHerApp() {
         </AnimatePresence>
       </main>
 
-      {activeScreen !== "welcome" ? <ComfortDock activeScreen={activeScreen} onChangeScreen={navigate} founderMode={founderMode} /> : null}
+      {activeScreen !== "welcome" ? <ComfortDock activeScreen={activeScreen} onChangeScreen={navigate} /> : null}
 
       <InstallPrompt />
-
-      {settingsOpen ? (
-        <div className="fixed bottom-6 left-6 z-[60] hidden w-80 xl:block">
-          <FounderModePanel founderMode={founderMode} onUnlock={enableFounderMode} onDisable={disableFounder} />
-        </div>
-      ) : null}
 
       <SettingsModal
         open={settingsOpen}

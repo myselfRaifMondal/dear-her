@@ -4,7 +4,6 @@ type DockItem = {
   id: Screen;
   label: string;
   icon: string;
-  founderOnly?: boolean;
 };
 
 const items: DockItem[] = [
@@ -15,8 +14,8 @@ const items: DockItem[] = [
   { id: "messages", label: "Messages", icon: "♡" },
   { id: "mira", label: "Mira", icon: "✦" },
   { id: "sync", label: "Sync", icon: "☁" },
-  { id: "feedback", label: "Feedback", icon: "✎", founderOnly: true },
-  { id: "insights", label: "Insights", icon: "◌", founderOnly: true },
+  { id: "feedback", label: "Feedback", icon: "✎" },
+  { id: "insights", label: "Insights", icon: "◌" },
   { id: "favorites", label: "Favorites", icon: "⋆" },
   { id: "activities", label: "Calm", icon: "☾" },
 ];
@@ -24,18 +23,16 @@ const items: DockItem[] = [
 type ComfortDockProps = {
   activeScreen: Screen;
   onChangeScreen: (screen: Screen) => void;
-  founderMode?: boolean;
 };
 
-export function ComfortDock({ activeScreen, onChangeScreen, founderMode = false }: ComfortDockProps) {
-  const visibleItems = items.filter((item) => !item.founderOnly || founderMode);
+export function ComfortDock({ activeScreen, onChangeScreen }: ComfortDockProps) {
   return (
     <nav
       aria-label="Comfort sections"
       className="comfort-dock fixed inset-x-0 bottom-3 z-30 mx-auto w-[calc(100%-1rem)] max-w-5xl rounded-[1.75rem] border border-white/10 bg-slate-950/60 p-2 shadow-[0_24px_90px_rgba(0,0,0,0.45)] backdrop-blur-2xl sm:bottom-6 sm:w-[calc(100%-2rem)]"
     >
       <div className="flex gap-1 overflow-x-auto rounded-[1.25rem] p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {visibleItems.map((item) => {
+        {items.map((item) => {
           const active = activeScreen === item.id;
 
           return (
