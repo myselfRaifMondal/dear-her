@@ -12,3 +12,7 @@ dear-her-upgrade-production-hardening.sh
 .env.local
 dear-her-replace-openai-with-gemini.sh
 dear-her-upgrade-openai-mira.sh
+.env
+.env.*
+!.env.example
+.env.local
