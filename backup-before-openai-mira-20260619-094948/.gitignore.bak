@@ -8,7 +8,3 @@ dear-her-upgrade-mira-companion.sh
 dear-her-upgrade-supabase-sync.sh
 dear-her-upgrade-supabase-storage.sh
 dear-her-upgrade-production-hardening.sh
-
-.env.local
-dear-her-replace-openai-with-gemini.sh
-dear-her-upgrade-openai-mira.sh

@@ -16,9 +16,6 @@ export type AnalyticsEventName =
   | "cloud_backup_checked"
   | "cloud_backup_restored"
   | "cloud_backup_deleted"
-  | "mira_ai_reply_success"
-  | "mira_ai_reply_fallback"
-  | "mira_ai_reply_error"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";

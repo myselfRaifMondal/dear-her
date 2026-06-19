@@ -17,7 +17,7 @@ const openingMessage: MiraMessage = {
   id: "mira-opening",
   role: "assistant",
   text:
-    "Hi, I’m Mira. I can now try Gemini-powered comfort when it is available, and I’ll fall back to the local comfort guide if the server is offline. No diagnosis, no pressure, no medical advice.",
+    "Hi, I’m Mira. I can now try AI-powered comfort when it is available, and I’ll fall back to the local comfort guide if the server is offline. No diagnosis, no pressure, no medical advice.",
   createdAt: new Date().toISOString(),
 };
 
@@ -38,7 +38,7 @@ export function MiraCompanion({ selectedMood, onNavigate }: MiraCompanionProps) 
   const [messages, setMessages] = useState<MiraMessage[]>(loadThread);
   const [draft, setDraft] = useState("");
   const [isThinking, setIsThinking] = useState(false);
-  const [lastSource, setLastSource] = useState<"gemini" | "safety_gate" | "local" | null>(null);
+  const [lastSource, setLastSource] = useState<"openai" | "safety_gate" | "local" | null>(null);
   const [lastError, setLastError] = useState<string | null>(null);
   const threadRef = useRef<HTMLDivElement | null>(null);
 
@@ -101,7 +101,7 @@ export function MiraCompanion({ selectedMood, onNavigate }: MiraCompanionProps) 
 
       setMessages([...threadWithUser, assistantMessage]);
       setLastSource("local");
-      setLastError(error instanceof Error ? error.message : "Mira Gemini is unavailable.");
+      setLastError(error instanceof Error ? error.message : "Mira AI is unavailable.");
       trackEvent("mira_ai_reply_fallback", {
         mood: selectedMood ?? "unknown",
       });
@@ -129,7 +129,7 @@ export function MiraCompanion({ selectedMood, onNavigate }: MiraCompanionProps) 
           A softer voice beside you.
         </h2>
         <p className="mt-5 leading-7 text-cream-100/70">
-          Mira can use a private server-side Gemini route when configured, with a local comfort fallback when offline or unavailable.
+          Mira can use a private server-side AI route when configured, with a local comfort fallback when offline or unavailable.
         </p>
       </div>
 
@@ -137,8 +137,8 @@ export function MiraCompanion({ selectedMood, onNavigate }: MiraCompanionProps) 
         <GlassCard className="flex min-h-[620px] flex-col p-4 sm:p-5">
           <div className="mb-4 flex flex-wrap items-center gap-2">
             <span className="rounded-full border border-white/10 bg-white/[0.055] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-cream-100/60">
-              {lastSource === "gemini"
-                ? "Gemini enhanced"
+              {lastSource === "openai"
+                ? "AI enhanced"
                 : lastSource === "safety_gate"
                   ? "Safety reply"
                   : lastSource === "local"
