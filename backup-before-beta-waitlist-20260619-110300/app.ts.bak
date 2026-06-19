@@ -6,7 +6,6 @@ export type Screen =
   | "memories"
   | "mood"
   | "onboarding"
-  | "waitlist"
   | "messages"
   | "mira"
   | "care"

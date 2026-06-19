@@ -82,10 +82,6 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
               Open comfort room
             </SoftButton>
 
-            <SoftButton variant="secondary" onClick={() => clickCta("join_waitlist", () => onNavigate("waitlist"))}>
-              Join beta waitlist
-            </SoftButton>
-
             <a
               className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.045] px-5 text-sm font-semibold text-cream-100/75 transition hover:bg-white/[0.08] hover:text-cream-100"
               href="/care-package"

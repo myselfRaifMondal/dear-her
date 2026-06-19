@@ -30,9 +30,6 @@ export type AnalyticsEventName =
   | "first_session_guide_dismissed"
   | "beta_badge_clicked"
   | "testimonial_placeholder_clicked"
-  | "waitlist_submitted"
-  | "waitlist_failed"
-  | "waitlist_invite_copied"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";

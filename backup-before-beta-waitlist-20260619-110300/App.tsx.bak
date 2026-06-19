@@ -1,4 +1,3 @@
-import { BetaWaitlist } from "./components/BetaWaitlist";
 import { AnimatePresence } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-router-dom";
@@ -57,7 +56,6 @@ const screenToPath: Record<Screen, string> = {
   welcome: "/",
   mood: "/mood",
   onboarding: "/onboarding",
-  waitlist: "/waitlist",
   breathe: "/breathe",
   room: "/room",
   sounds: "/soundscapes",
@@ -75,7 +73,6 @@ const screenToPath: Record<Screen, string> = {
 function getScreenFromPath(pathname: string): Screen {
   if (pathname === "/") return "welcome";
   if (pathname.startsWith("/onboarding")) return "onboarding";
-  if (pathname.startsWith("/waitlist")) return "waitlist";
   if (pathname.startsWith("/mood")) return "mood";
   if (pathname.startsWith("/breathe")) return "breathe";
   if (pathname.startsWith("/room")) return "room";
@@ -251,15 +248,6 @@ function DearHerApp() {
               element={
                 <PageTransition reducedMotion={effectiveReducedMotion}>
                   <LandingPage onNavigate={navigate} />
-                </PageTransition>
-              }
-            />
-
-            <Route
-              path="/waitlist"
-              element={
-                <PageTransition reducedMotion={effectiveReducedMotion}>
-                  <BetaWaitlist onNavigate={navigate} />
                 </PageTransition>
               }
             />
