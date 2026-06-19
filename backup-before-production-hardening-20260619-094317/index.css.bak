@@ -263,29 +263,3 @@ select {
     transition-duration: 0.001ms !important;
   }
 }
-
-/* Dear Her v1.8 production hardening */
-img,
-picture,
-video,
-canvas,
-svg {
-  max-width: 100%;
-}
-
-[aria-disabled="true"],
-button:disabled {
-  cursor: not-allowed;
-}
-
-input:disabled,
-textarea:disabled,
-button:disabled {
-  opacity: 0.58;
-}
-
-@media (max-width: 420px) {
-  .comfort-dock span {
-    font-size: 0.72rem;
-  }
-}

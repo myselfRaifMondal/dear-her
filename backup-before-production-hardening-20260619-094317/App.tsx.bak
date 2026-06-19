@@ -1,28 +1,24 @@
 import { AnimatePresence } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
-import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { AppSplash } from "./components/AppSplash";
 import { AuroraBackground } from "./components/AuroraBackground";
 import { BreathingSpace } from "./components/BreathingSpace";
 import { ComfortDock } from "./components/ComfortDock";
 import { ComfortMessages } from "./components/ComfortMessages";
 import { ComfortRoom } from "./components/ComfortRoom";
-import { ErrorBoundary } from "./components/ErrorBoundary";
 import { CloudSync } from "./components/CloudSync";
 import { FavoriteThings } from "./components/FavoriteThings";
 import { FloatingParticles } from "./components/FloatingParticles";
 import { InstallPrompt } from "./components/InstallPrompt";
 import { MiraCompanion } from "./components/MiraCompanion";
 import { MoodCheckIn } from "./components/MoodCheckIn";
-import { OfflineBanner } from "./components/OfflineBanner";
-import { NotFound } from "./components/NotFound";
 import { PageTransition } from "./components/PageTransition";
 import { PersonalMemories } from "./components/PersonalMemories";
 import { RelaxationActivities } from "./components/RelaxationActivities";
 import { SettingsModal } from "./components/SettingsModal";
 import { Soundscapes } from "./components/Soundscapes";
 import { TopBar } from "./components/TopBar";
-import { ToastProvider } from "./components/ToastProvider";
 import { Welcome } from "./components/Welcome";
 import { useSystemReducedMotion } from "./hooks/useReducedMotion";
 import { setAmbienceVolume, startAmbience, stopAmbience } from "./lib/ambientAudio";
@@ -214,7 +210,6 @@ function DearHerApp() {
       <AuroraBackground environment={environment} reducedMotion={effectiveReducedMotion} />
       <FloatingParticles reducedMotion={effectiveReducedMotion} />
       <AppSplash reducedMotion={effectiveReducedMotion} />
-      <OfflineBanner />
       <TopBar
         onOpenSettings={() => {
           setSettingsOpen(true);
@@ -338,14 +333,7 @@ function DearHerApp() {
               }
             />
 
-            <Route
-              path="*"
-              element={
-                <PageTransition reducedMotion={effectiveReducedMotion}>
-                  <NotFound onNavigate={navigate} />
-                </PageTransition>
-              }
-            />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AnimatePresence>
       </main>
@@ -367,12 +355,8 @@ function DearHerApp() {
 
 export default function App() {
   return (
-    <ErrorBoundary>
-      <ToastProvider>
-        <BrowserRouter>
-          <DearHerApp />
-        </BrowserRouter>
-      </ToastProvider>
-    </ErrorBoundary>
+    <BrowserRouter>
+      <DearHerApp />
+    </BrowserRouter>
   );
 }
