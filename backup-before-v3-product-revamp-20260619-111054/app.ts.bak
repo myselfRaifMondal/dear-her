@@ -1,6 +1,4 @@
 export type Screen =
-  | "you"
-  | "soundscapes"
   | "welcome"
   | "breathe"
   | "room"

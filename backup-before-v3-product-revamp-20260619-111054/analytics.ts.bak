@@ -33,12 +33,6 @@ export type AnalyticsEventName =
   | "waitlist_submitted"
   | "waitlist_failed"
   | "waitlist_invite_copied"
-  | "today_action_clicked"
-  | "today_soft_path_clicked"
-  | "product_room_environment_changed"
-  | "product_room_sound_selected"
-  | "you_space_action_clicked"
-  | "v3_revamp_loaded"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";

@@ -332,29 +332,3 @@ button:disabled {
     transform: translateY(-3px);
   }
 }
-
-/* Dear Her v3.0 product experience revamp */
-.comfort-dock {
-  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
-}
-
-@media (max-width: 420px) {
-  .comfort-dock {
-    left: 0.5rem;
-    right: 0.5rem;
-  }
-
-  .comfort-dock button {
-    min-height: 3.35rem;
-  }
-
-  .comfort-dock span:last-child {
-    font-size: 0.64rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .v3-product-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}

@@ -7,52 +7,49 @@ type DockItem = {
   founderOnly?: boolean;
 };
 
-const items: DockItem[] = [
-  { id: "room", label: "Room", icon: "◐" },
-  { id: "breathe", label: "Breathe", icon: "○" },
-  { id: "sounds", label: "Sounds", icon: "♪" },
-  { id: "memories", label: "Memories", icon: "✧" },
-  { id: "messages", label: "Messages", icon: "♡" },
-  { id: "mira", label: "Mira", icon: "✦" },
-  { id: "care", label: "Care", icon: "♡" },
-  { id: "sync", label: "Sync", icon: "☁" },
-  { id: "feedback", label: "Feedback", icon: "✎", founderOnly: true },
-  { id: "insights", label: "Insights", icon: "◌", founderOnly: true },
-  { id: "favorites", label: "Favorites", icon: "⋆" },
-  { id: "activities", label: "Calm", icon: "☾" },
-];
-
 type ComfortDockProps = {
   activeScreen: Screen;
   onChangeScreen: (screen: Screen) => void;
   founderMode?: boolean;
 };
 
+const items: DockItem[] = [
+  { id: "welcome", label: "Today", icon: "◐" },
+  { id: "breathe", label: "Breathe", icon: "○" },
+  { id: "room", label: "Room", icon: "☾" },
+  { id: "mira", label: "Mira", icon: "✦" },
+  { id: "care", label: "Care", icon: "♡" },
+  { id: "you", label: "You", icon: "◌" },
+  { id: "feedback", label: "Feedback", icon: "✎", founderOnly: true },
+  { id: "insights", label: "Insights", icon: "⌁", founderOnly: true },
+];
+
 export function ComfortDock({ activeScreen, onChangeScreen, founderMode = false }: ComfortDockProps) {
   const visibleItems = items.filter((item) => !item.founderOnly || founderMode);
+
   return (
     <nav
-      aria-label="Comfort sections"
-      className="comfort-dock fixed inset-x-0 bottom-3 z-30 mx-auto w-[calc(100%-1rem)] max-w-5xl rounded-[1.75rem] border border-white/10 bg-slate-950/60 p-2 shadow-[0_24px_90px_rgba(0,0,0,0.45)] backdrop-blur-2xl sm:bottom-6 sm:w-[calc(100%-2rem)]"
+      className="comfort-dock fixed inset-x-3 bottom-3 z-50 mx-auto max-w-4xl rounded-[2rem] border border-white/10 bg-slate-950/72 p-2 shadow-[0_24px_90px_rgba(0,0,0,0.45)] backdrop-blur-2xl sm:bottom-5 sm:p-3"
+      aria-label="Dear Her primary navigation"
     >
-      <div className="flex gap-1 overflow-x-auto rounded-[1.25rem] p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="grid grid-cols-6 gap-1 sm:gap-2">
         {visibleItems.map((item) => {
           const active = activeScreen === item.id;
 
           return (
             <button
               key={item.id}
-              type="button"
-              aria-current={active ? "page" : undefined}
-              className={`group relative flex min-h-12 min-w-[4.25rem] flex-shrink-0 flex-col items-center justify-center gap-0.5 rounded-full px-4 text-xs font-semibold transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-200 sm:min-w-0 sm:flex-row sm:gap-2 sm:text-sm ${
+              className={`min-h-14 rounded-[1.45rem] px-2 py-2 text-center transition ${
                 active
-                  ? "bg-cream-100 text-slate-950 shadow-[0_14px_34px_rgba(246,232,216,0.24)]"
-                  : "text-cream-100/68 hover:bg-white/10 hover:text-cream-100"
+                  ? "bg-cream-100 text-slate-950 shadow-[0_10px_30px_rgba(255,250,243,0.16)]"
+                  : "text-cream-100/58 hover:bg-white/[0.07] hover:text-cream-100"
               }`}
+              type="button"
               onClick={() => onChangeScreen(item.id)}
+              aria-current={active ? "page" : undefined}
             >
-              <span className="text-base leading-none sm:text-sm">{item.icon}</span>
-              <span>{item.label}</span>
+              <span className="block text-lg leading-none">{item.icon}</span>
+              <span className="mt-1 block text-[0.68rem] font-semibold leading-none sm:text-xs">{item.label}</span>
             </button>
           );
         })}
