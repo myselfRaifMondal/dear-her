@@ -289,15 +289,3 @@ button:disabled {
     font-size: 0.72rem;
   }
 }
-
-/* Dear Her v2.3 landing polish */
-@media (max-width: 640px) {
-  .landing-hero-title {
-    letter-spacing: -0.045em;
-  }
-}
-
-::selection {
-  background: rgba(255, 211, 226, 0.28);
-  color: #fffaf3;
-}

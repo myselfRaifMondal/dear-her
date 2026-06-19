@@ -23,7 +23,6 @@ export type AnalyticsEventName =
   | "care_package_created"
   | "care_package_copied"
   | "care_package_opened"
-  | "landing_cta_clicked"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";

@@ -1,0 +1,163 @@
+import { trackEvent } from "../lib/analytics";
+import type { Screen } from "../types/app";
+import { GlassCard } from "./GlassCard";
+import { SoftButton } from "./SoftButton";
+
+type LandingPageProps = {
+  onNavigate: (screen: Screen) => void;
+};
+
+const proofPoints = [
+  {
+    value: "No tracking pressure",
+    label: "Not a period tracker. Not a medical app. Just comfort.",
+  },
+  {
+    value: "Private first",
+    label: "Memories, favorites, and notes stay local unless cloud sync is enabled.",
+  },
+  {
+    value: "Soft by design",
+    label: "Breathing, soundscapes, rooms, messages, and gentle companion support.",
+  },
+];
+
+const featureCards = [
+  {
+    title: "When the day feels heavy",
+    description: "Open a quiet room, breathe slowly, and let the interface reduce the noise.",
+  },
+  {
+    title: "When she needs softness",
+    description: "Create a care package with a personal note, tiny actions, and comforting messages.",
+  },
+  {
+    title: "When words are hard",
+    description: "Mira offers non-medical emotional comfort with a local fallback when AI is unavailable.",
+  },
+];
+
+export function LandingPage({ onNavigate }: LandingPageProps) {
+  function clickCta(cta: string, action: () => void): void {
+    trackEvent("landing_cta_clicked", {
+      cta,
+    });
+
+    action();
+  }
+
+  return (
+    <section className="mx-auto min-h-[calc(100vh-7rem)] w-full max-w-7xl px-5 pb-36 pt-10 sm:px-8">
+      <div className="grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+        <div>
+          <div className="inline-flex rounded-full border border-rose-200/20 bg-rose-200/[0.08] px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-rose-100/80">
+            Public beta · comfort sanctuary
+          </div>
+
+          <h1 className="mt-6 font-display text-6xl font-semibold tracking-[-0.055em] text-cream-100 sm:text-8xl lg:text-9xl">
+            Comfort, made soft.
+          </h1>
+
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-cream-100/72 sm:text-xl sm:leading-9">
+            Dear Her is a gentle digital sanctuary for difficult days — with breathing, soundscapes,
+            comfort rooms, memories, care packages, and Mira.
+          </p>
+
+          <p className="mt-4 max-w-2xl text-sm leading-7 text-cream-100/52">
+            It is not medical advice, not diagnosis, and not a period tracker. It is a calm place to feel held,
+            breathe, rest, and receive softer words.
+          </p>
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <SoftButton onClick={() => clickCta("start_softly", () => onNavigate("breathe"))}>
+              Start softly
+            </SoftButton>
+
+            <SoftButton variant="secondary" onClick={() => clickCta("open_room", () => onNavigate("room"))}>
+              Open comfort room
+            </SoftButton>
+
+            <a
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.045] px-5 text-sm font-semibold text-cream-100/75 transition hover:bg-white/[0.08] hover:text-cream-100"
+              href="/care-package"
+              onClick={() => {
+                trackEvent("landing_cta_clicked", {
+                  cta: "create_care_package",
+                });
+              }}
+            >
+              Create care package
+            </a>
+          </div>
+        </div>
+
+        <GlassCard className="relative overflow-hidden border-rose-200/20 bg-rose-200/[0.07] p-6 sm:p-8">
+          <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-rose-200/20 blur-3xl" />
+          <div className="absolute -bottom-24 left-6 h-60 w-60 rounded-full bg-violet-200/10 blur-3xl" />
+
+          <div className="relative">
+            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-rose-100/70">Today’s soft path</p>
+
+            <div className="mt-6 space-y-4">
+              {[
+                ["01", "Check in", "Choose how the day feels without overthinking it."],
+                ["02", "Breathe", "Follow a slow visual rhythm for one minute."],
+                ["03", "Set the room", "Rain, moon, forest, ocean, warmth — choose the atmosphere."],
+                ["04", "Keep what helps", "Save memories, favorites, and care notes privately."],
+              ].map(([number, title, description]) => (
+                <div key={number} className="rounded-[1.75rem] border border-white/10 bg-white/[0.055] p-4">
+                  <div className="flex gap-4">
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-cream-100 text-sm font-bold text-slate-950">
+                      {number}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-cream-100">{title}</p>
+                      <p className="mt-1 text-sm leading-6 text-cream-100/60">{description}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </GlassCard>
+      </div>
+
+      <div className="mt-8 grid gap-4 md:grid-cols-3">
+        {proofPoints.map((item) => (
+          <GlassCard key={item.value} className="bg-white/[0.04]">
+            <p className="font-display text-3xl font-semibold text-cream-100">{item.value}</p>
+            <p className="mt-3 text-sm leading-6 text-cream-100/60">{item.label}</p>
+          </GlassCard>
+        ))}
+      </div>
+
+      <div className="mt-8 grid gap-5 lg:grid-cols-3">
+        {featureCards.map((item) => (
+          <GlassCard key={item.title} className="transition hover:-translate-y-1 hover:bg-white/[0.06]">
+            <p className="font-display text-3xl font-semibold text-cream-100">{item.title}</p>
+            <p className="mt-4 leading-7 text-cream-100/65">{item.description}</p>
+          </GlassCard>
+        ))}
+      </div>
+
+      <GlassCard className="mt-8 border-rose-200/20 bg-rose-200/[0.07]">
+        <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.28em] text-rose-100/70">Beta validation goal</p>
+            <h2 className="mt-3 font-display text-4xl font-semibold tracking-[-0.035em] text-cream-100 sm:text-5xl">
+              The test is simple: does it make a difficult day feel even 5% softer?
+            </h2>
+            <p className="mt-4 max-w-3xl leading-7 text-cream-100/65">
+              Show it to real users. Watch what they click first. Ask what felt calming, what felt cringe,
+              and whether they would open it again.
+            </p>
+          </div>
+
+          <SoftButton onClick={() => clickCta("beta_start", () => onNavigate("breathe"))}>
+            Try the beta
+          </SoftButton>
+        </div>
+      </GlassCard>
+    </section>
+  );
+}

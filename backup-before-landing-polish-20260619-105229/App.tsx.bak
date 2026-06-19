@@ -16,7 +16,6 @@ import { FloatingParticles } from "./components/FloatingParticles";
 import { FounderGate } from "./components/FounderGate";
 import { FounderModePanel } from "./components/FounderModePanel";
 import { InstallPrompt } from "./components/InstallPrompt";
-import { LandingPage } from "./components/LandingPage";
 import { Insights } from "./components/Insights";
 import { MiraCompanion } from "./components/MiraCompanion";
 import { MoodCheckIn } from "./components/MoodCheckIn";
@@ -243,7 +242,7 @@ function DearHerApp() {
               path="/"
               element={
                 <PageTransition reducedMotion={effectiveReducedMotion}>
-                  <LandingPage onNavigate={navigate} />
+                  <Welcome onNavigate={navigate} reducedMotion={effectiveReducedMotion} />
                 </PageTransition>
               }
             />
