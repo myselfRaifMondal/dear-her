@@ -45,11 +45,6 @@ export type AnalyticsEventName =
   | "daily_plan_intention_updated"
   | "daily_plan_energy_updated"
   | "daily_plan_reset"
-  | "you_space_tab_changed"
-  | "you_space_export_clicked"
-  | "you_space_privacy_action"
-  | "you_space_quick_action"
-  | "you_space_beta_action"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";
