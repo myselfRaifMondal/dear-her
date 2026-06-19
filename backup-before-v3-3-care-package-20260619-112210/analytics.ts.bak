@@ -50,11 +50,6 @@ export type AnalyticsEventName =
   | "you_space_privacy_action"
   | "you_space_quick_action"
   | "you_space_beta_action"
-  | "care_package_template_selected"
-  | "care_package_preview_toggled"
-  | "care_package_share_clicked"
-  | "care_package_viewer_action_clicked"
-  | "care_package_note_refined"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";

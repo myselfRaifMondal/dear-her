@@ -17,41 +17,96 @@ type CarePackageProps = {
   onNavigate: (screen: Screen) => void;
 };
 
-const toneOptions: Array<{ value: CarePackageTone; label: string; description: string }> = [
+type CareTemplate = {
+  id: string;
+  title: string;
+  description: string;
+  tone: CarePackageTone;
+  room: CarePackageRoom;
+  soundscape: string;
+  openingNote: string;
+  gentleActions: string[];
+  comfortMessages: string[];
+};
+
+const templates: CareTemplate[] = [
   {
-    value: "warmth",
-    label: "Warmth",
-    description: "Soft, caring, cozy support.",
+    id: "hard-day",
+    title: "For a hard day",
+    description: "Warm, soft, and low-pressure.",
+    tone: "warmth",
+    room: "rose",
+    soundscape: "rain",
+    openingNote: "I made this for you because today does not need to be carried alone. Open it slowly. Take only what feels soft.",
+    gentleActions: ["Drink something warm", "Try 60 seconds of breathing", "Rest without guilt"],
+    comfortMessages: [
+      "You do not have to be okay all at once.",
+      "Take the softest possible version of today.",
+      "You deserve care without explaining yourself.",
+    ],
   },
   {
-    value: "breathing",
-    label: "Breathing",
-    description: "Gentle grounding and calm.",
+    id: "pain-and-fatigue",
+    title: "For pain and tiredness",
+    description: "Quiet comfort when the body feels heavy.",
+    tone: "quiet",
+    room: "moon",
+    soundscape: "night",
+    openingNote: "I know your body may feel heavy right now. I cannot fix everything, but I wanted to make a softer corner for you.",
+    gentleActions: ["Dim the lights", "Hold a pillow close", "Do nothing for five minutes"],
+    comfortMessages: [
+      "No pressure. No performance. Just a little softness.",
+      "Let the day become smaller for a while.",
+      "Rest is allowed. You do not need to earn it.",
+    ],
   },
   {
-    value: "quiet",
-    label: "Quiet",
-    description: "Low words, low pressure.",
+    id: "anxious-night",
+    title: "For an anxious night",
+    description: "Breathing-first and gentle.",
+    tone: "breathing",
+    room: "rain",
+    soundscape: "rain",
+    openingNote: "When everything feels loud, start here. One breath, then another. Nothing else needs to be solved right now.",
+    gentleActions: ["Try 60 seconds of breathing", "Open a soft soundscape", "Lower your shoulders"],
+    comfortMessages: [
+      "Inhale slowly. Exhale like you are putting something heavy down.",
+      "One breath is enough to begin again.",
+      "Stay with this tiny calm moment.",
+    ],
   },
   {
-    value: "love",
-    label: "Love",
-    description: "Affectionate and reassuring.",
-  },
-  {
-    value: "sleep",
-    label: "Sleep",
-    description: "Rest-first comfort.",
+    id: "love-note",
+    title: "A small love note",
+    description: "Affectionate, reassuring, and personal.",
+    tone: "love",
+    room: "rose",
+    soundscape: "fireplace",
+    openingNote: "I made this because I love you, and I want you to feel cared for even when I am not beside you.",
+    gentleActions: ["Read one comfort message", "Drink something warm", "Rest without guilt"],
+    comfortMessages: [
+      "You are not a burden. You are someone worth caring for.",
+      "I wish I could make this easier, but I am beside you in every way I can be.",
+      "You are loved even when you feel low.",
+    ],
   },
 ];
 
-const roomOptions: Array<{ value: CarePackageRoom; label: string }> = [
-  { value: "rose", label: "Rose dusk" },
-  { value: "moon", label: "Moon room" },
-  { value: "rain", label: "Rain window" },
-  { value: "forest", label: "Forest blanket" },
-  { value: "ocean", label: "Ocean hush" },
-];
+const toneLabels: Record<CarePackageTone, string> = {
+  warmth: "Warmth",
+  breathing: "Breathing",
+  quiet: "Quiet",
+  love: "Love",
+  sleep: "Sleep",
+};
+
+const roomLabels: Record<CarePackageRoom, string> = {
+  rose: "Rose dusk",
+  moon: "Moon quiet",
+  rain: "Rain window",
+  forest: "Forest blanket",
+  ocean: "Ocean hush",
+};
 
 const actionOptions = [
   "Drink something warm",
@@ -62,54 +117,50 @@ const actionOptions = [
   "Hold a pillow close",
   "Read one comfort message",
   "Do nothing for five minutes",
+  "Lower your shoulders",
+  "Let your jaw unclench",
 ];
 
-const messageStarters = {
-  warmth: [
-    "You do not have to be okay all at once.",
-    "Take the softest possible version of today.",
-    "You deserve care without explaining yourself.",
-  ],
-  breathing: [
-    "Inhale slowly. Exhale like you are putting something heavy down.",
-    "One breath is enough to begin again.",
-    "Stay with this tiny calm moment.",
-  ],
-  quiet: [
-    "No pressure. No performance. Just a little softness.",
-    "You can be quiet and still be deeply cared for.",
-    "Let the day become smaller for a while.",
-  ],
-  love: [
-    "You are not a burden. You are someone worth caring for.",
-    "I wish I could make this easier, but I am beside you in every way I can be.",
-    "You are loved even when you feel low.",
-  ],
-  sleep: [
-    "Rest is allowed. You do not need to earn it.",
-    "Let your body take the slower road tonight.",
-    "Close the day gently. Nothing more is required from you right now.",
-  ],
-} satisfies Record<CarePackageTone, string[]>;
-
 function createDefaultPackage(): CarePackageData {
+  const template = templates[0];
+
   return {
     version: 1,
     id: crypto.randomUUID(),
     createdAt: new Date().toISOString(),
     creatorName: "",
     recipientName: "",
-    title: "A small comfort package for you",
-    openingNote: "I made this for you so the day feels a little softer.",
-    tone: "warmth",
-    room: "rose",
-    soundscape: "rain",
-    gentleActions: ["Drink something warm", "Try 60 seconds of breathing", "Rest without guilt"],
-    comfortMessages: messageStarters.warmth,
+    title: template.title,
+    openingNote: template.openingNote,
+    tone: template.tone,
+    room: template.room,
+    soundscape: template.soundscape,
+    gentleActions: template.gentleActions,
+    comfortMessages: template.comfortMessages,
   };
 }
 
-function CarePackageViewer({ carePackage, onNavigate }: { carePackage: CarePackageData; onNavigate: (screen: Screen) => void }) {
+function cleanPackage(draft: CarePackageData): CarePackageData {
+  return {
+    ...draft,
+    id: crypto.randomUUID(),
+    createdAt: new Date().toISOString(),
+    creatorName: draft.creatorName.trim(),
+    recipientName: draft.recipientName.trim(),
+    title: draft.title.trim() || "A small comfort package for you",
+    openingNote: draft.openingNote.trim() || "I made this for you so the day feels a little softer.",
+    gentleActions: draft.gentleActions.map((item) => item.trim()).filter(Boolean).slice(0, 5),
+    comfortMessages: draft.comfortMessages.map((item) => item.trim()).filter(Boolean).slice(0, 3),
+  };
+}
+
+function CarePackageViewer({
+  carePackage,
+  onNavigate,
+}: {
+  carePackage: CarePackageData;
+  onNavigate: (screen: Screen) => void;
+}) {
   useEffect(() => {
     trackEvent("care_package_opened", {
       tone: carePackage.tone,
@@ -117,53 +168,74 @@ function CarePackageViewer({ carePackage, onNavigate }: { carePackage: CarePacka
     });
   }, [carePackage.room, carePackage.tone]);
 
+  function viewerAction(action: string, screen: Screen): void {
+    trackEvent("care_package_viewer_action_clicked", {
+      action,
+      screen,
+      tone: carePackage.tone,
+    });
+
+    onNavigate(screen);
+  }
+
   return (
-    <section className="mx-auto min-h-[calc(100vh-7rem)] w-full max-w-6xl px-5 pb-36 pt-10 sm:px-8">
-      <div className="mb-8 max-w-3xl">
-        <p className="text-sm font-semibold uppercase tracking-[0.35em] text-rose-200/75">A care package</p>
-        <h2 className="mt-4 font-display text-5xl font-semibold tracking-[-0.03em] text-cream-100 sm:text-7xl">
-          {carePackage.title}
-        </h2>
-        <p className="mt-5 leading-7 text-cream-100/70">
-          {carePackage.creatorName ? `From ${carePackage.creatorName}` : "Made softly for you"}
-          {carePackage.recipientName ? ` · for ${carePackage.recipientName}` : ""}
+    <section className="mx-auto min-h-[calc(100vh-7rem)] w-full max-w-7xl px-5 pb-36 pt-10 sm:px-8">
+      <div className="mx-auto max-w-4xl text-center">
+        <p className="text-sm font-semibold uppercase tracking-[0.35em] text-rose-200/75">A soft care package</p>
+        <h1 className="mt-5 font-display text-6xl font-semibold tracking-[-0.055em] text-cream-100 sm:text-8xl">
+          {carePackage.recipientName ? `For ${carePackage.recipientName}` : "For you"}
+        </h1>
+        <p className="mx-auto mt-5 max-w-2xl leading-7 text-cream-100/65">
+          {carePackage.creatorName ? `Made by ${carePackage.creatorName}` : "Made with care"}
+          {" · "}
+          {toneLabels[carePackage.tone]} · {roomLabels[carePackage.room]}
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_0.8fr]">
-        <GlassCard className="border-rose-200/20 bg-rose-200/[0.07]">
-          <p className="font-display text-4xl font-semibold text-cream-100">Open this slowly.</p>
-          <p className="mt-5 whitespace-pre-line text-lg leading-8 text-cream-100/75">{carePackage.openingNote}</p>
+      <GlassCard className="mx-auto mt-8 max-w-5xl border-rose-200/20 bg-rose-200/[0.07] p-7 text-center sm:p-10">
+        <p className="text-sm font-semibold uppercase tracking-[0.28em] text-rose-100/70">Open slowly</p>
+        <h2 className="mt-4 font-display text-5xl font-semibold tracking-[-0.04em] text-cream-100">
+          {carePackage.title}
+        </h2>
+        <p className="mx-auto mt-6 max-w-3xl whitespace-pre-line text-xl leading-9 text-cream-100/78">
+          {carePackage.openingNote}
+        </p>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-3">
-            <SoftButton onClick={() => onNavigate("breathe")}>Breathe now</SoftButton>
-            <SoftButton variant="secondary" onClick={() => onNavigate("room")}>
-              Open room
-            </SoftButton>
-            <SoftButton variant="secondary" onClick={() => onNavigate("sounds")}>
-              Play sound
-            </SoftButton>
-          </div>
-        </GlassCard>
+        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+          <SoftButton onClick={() => viewerAction("breathe_now", "breathe")}>Breathe now</SoftButton>
+          <SoftButton variant="secondary" onClick={() => viewerAction("open_room", "room")}>
+            Open comfort room
+          </SoftButton>
+          <SoftButton variant="secondary" onClick={() => viewerAction("ask_mira", "mira")}>
+            Ask Mira
+          </SoftButton>
+        </div>
+      </GlassCard>
 
+      <div className="mt-6 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
         <GlassCard>
           <p className="font-display text-3xl font-semibold text-cream-100">Tiny care steps</p>
+          <p className="mt-2 text-sm leading-6 text-cream-100/60">Do one, or do none. This is not a checklist.</p>
+
           <div className="mt-5 space-y-3">
             {carePackage.gentleActions.map((action) => (
-              <div key={action} className="rounded-3xl border border-white/10 bg-white/[0.045] p-4 text-sm font-semibold text-cream-100/75">
+              <div
+                key={action}
+                className="rounded-3xl border border-white/10 bg-white/[0.055] p-4 text-sm font-semibold text-cream-100/75"
+              >
                 {action}
               </div>
             ))}
           </div>
         </GlassCard>
-      </div>
 
-      <div className="mt-6 grid gap-4 md:grid-cols-3">
-        {carePackage.comfortMessages.map((message) => (
-          <GlassCard key={message} className="bg-white/[0.045]">
-            <p className="text-lg leading-8 text-cream-100/78">“{message}”</p>
-          </GlassCard>
-        ))}
+        <div className="grid gap-4">
+          {carePackage.comfortMessages.map((message) => (
+            <GlassCard key={message} className="bg-white/[0.045]">
+              <p className="text-xl leading-9 text-cream-100/80">“{message}”</p>
+            </GlassCard>
+          ))}
+        </div>
       </div>
 
       <GlassCard className="mt-6 border-white/10 bg-white/[0.04]">
@@ -178,13 +250,16 @@ function CarePackageViewer({ carePackage, onNavigate }: { carePackage: CarePacka
 export function CarePackage({ onNavigate }: CarePackageProps) {
   const [sharedPackage, setSharedPackage] = useState<CarePackageData | null>(() => getCarePackageFromCurrentUrl());
   const [draft, setDraft] = useState<CarePackageData>(() => createDefaultPackage());
+  const [selectedTemplate, setSelectedTemplate] = useState(templates[0].id);
   const [shareLink, setShareLink] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
+  const [previewMode, setPreviewMode] = useState(false);
   const [recentPackages, setRecentPackages] = useState<CarePackageData[]>(() => loadRecentCarePackages());
 
-  const selectedTone = useMemo(
-    () => toneOptions.find((tone) => tone.value === draft.tone) ?? toneOptions[0],
-    [draft.tone],
+  const previewPackage = useMemo(() => cleanPackage(draft), [draft]);
+  const selectedTemplateData = useMemo(
+    () => templates.find((template) => template.id === selectedTemplate) ?? templates[0],
+    [selectedTemplate],
   );
 
   useEffect(() => {
@@ -202,6 +277,25 @@ export function CarePackage({ onNavigate }: CarePackageProps) {
       ...current,
       ...patch,
     }));
+  }
+
+  function applyTemplate(template: CareTemplate): void {
+    setSelectedTemplate(template.id);
+    updateDraft({
+      title: template.title,
+      openingNote: template.openingNote,
+      tone: template.tone,
+      room: template.room,
+      soundscape: template.soundscape,
+      gentleActions: template.gentleActions,
+      comfortMessages: template.comfortMessages,
+    });
+
+    setNotice(`${template.title} template applied.`);
+    trackEvent("care_package_template_selected", {
+      template: template.id,
+      tone: template.tone,
+    });
   }
 
   function toggleAction(action: string): void {
@@ -227,37 +321,40 @@ export function CarePackage({ onNavigate }: CarePackageProps) {
     }));
   }
 
-  function useToneTemplate(tone: CarePackageTone): void {
+  function refineNote(): void {
+    const recipient = draft.recipientName.trim() || "you";
+    const creator = draft.creatorName.trim();
+
+    const refined = [
+      creator ? `${recipient}, ${creator} made this for you.` : `${recipient}, this was made for you.`,
+      "Open it slowly. You do not have to reply, explain, or do anything perfectly.",
+      draft.openingNote.trim() || "I just wanted today to feel a little softer for you.",
+    ].join("\n\n");
+
     updateDraft({
-      tone,
-      comfortMessages: messageStarters[tone],
+      openingNote: refined,
+    });
+
+    setNotice("Opening note softened.");
+    trackEvent("care_package_note_refined", {
+      template: selectedTemplate,
     });
   }
 
   async function createPackage(): Promise<void> {
-    const cleanPackage: CarePackageData = {
-      ...draft,
-      id: crypto.randomUUID(),
-      createdAt: new Date().toISOString(),
-      creatorName: draft.creatorName.trim(),
-      recipientName: draft.recipientName.trim(),
-      title: draft.title.trim() || "A small comfort package for you",
-      openingNote: draft.openingNote.trim() || "I made this for you so the day feels a little softer.",
-      gentleActions: draft.gentleActions.length > 0 ? draft.gentleActions : ["Rest without guilt"],
-      comfortMessages: draft.comfortMessages.map((message) => message.trim()).filter(Boolean).slice(0, 3),
-    };
+    const finalPackage = cleanPackage(draft);
+    const link = createCarePackageLink(finalPackage);
 
-    const link = createCarePackageLink(cleanPackage);
-
-    saveRecentCarePackage(cleanPackage);
+    saveRecentCarePackage(finalPackage);
     setRecentPackages(loadRecentCarePackages());
     setShareLink(link);
-    setNotice("Care package created. Copy the link and send it to her.");
+    setNotice("Care package created. Copy or share the link.");
 
     trackEvent("care_package_created", {
-      tone: cleanPackage.tone,
-      room: cleanPackage.room,
-      actions: cleanPackage.gentleActions.length,
+      tone: finalPackage.tone,
+      room: finalPackage.room,
+      actions: finalPackage.gentleActions.length,
+      template: selectedTemplate,
     });
 
     try {
@@ -285,38 +382,157 @@ export function CarePackage({ onNavigate }: CarePackageProps) {
     }
   }
 
+  async function nativeShare(): Promise<void> {
+    if (!shareLink) {
+      setNotice("Create a care package first.");
+      return;
+    }
+
+    if (!("share" in window.navigator)) {
+      await copyLink();
+      return;
+    }
+
+    try {
+      await window.navigator.share({
+        title: draft.title || "A small comfort package",
+        text: "I made this soft care package for you.",
+        url: shareLink,
+      });
+
+      trackEvent("care_package_share_clicked", {
+        method: "native",
+      });
+    } catch {
+      setNotice("Share cancelled. You can still copy the link.");
+    }
+  }
+
+  function togglePreview(): void {
+    setPreviewMode((current) => !current);
+    trackEvent("care_package_preview_toggled", {
+      next: !previewMode,
+    });
+  }
+
   if (sharedPackage) {
     return <CarePackageViewer carePackage={sharedPackage} onNavigate={onNavigate} />;
   }
 
+  if (previewMode) {
+    return (
+      <div>
+        <div className="mx-auto flex w-full max-w-7xl justify-end px-5 pt-6 sm:px-8">
+          <SoftButton variant="secondary" onClick={togglePreview}>
+            Back to builder
+          </SoftButton>
+        </div>
+        <CarePackageViewer carePackage={previewPackage} onNavigate={onNavigate} />
+      </div>
+    );
+  }
+
   return (
     <section className="mx-auto min-h-[calc(100vh-7rem)] w-full max-w-7xl px-5 pb-36 pt-10 sm:px-8">
-      <div className="mb-8 max-w-3xl">
-        <p className="text-sm font-semibold uppercase tracking-[0.35em] text-rose-200/75">Care package</p>
-        <h2 className="mt-4 font-display text-5xl font-semibold tracking-[-0.03em] text-cream-100 sm:text-7xl">
-          Make something soft for her.
-        </h2>
-        <p className="mt-5 leading-7 text-cream-100/70">
-          Create a private shareable comfort link with a note, soft actions, and reassuring messages. No login required.
-        </p>
+      <div className="mb-8 grid gap-6 lg:grid-cols-[1fr_0.62fr] lg:items-end">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.35em] text-rose-200/75">Care package</p>
+          <h2 className="mt-4 font-display text-5xl font-semibold tracking-[-0.03em] text-cream-100 sm:text-7xl">
+            Make something soft for her.
+          </h2>
+          <p className="mt-5 max-w-3xl leading-7 text-cream-100/70">
+            Choose a template, add your words, preview the recipient experience, and send a private share link.
+          </p>
+        </div>
+
+        <GlassCard className="border-rose-200/20 bg-rose-200/[0.07]">
+          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-rose-100/70">Current template</p>
+          <p className="mt-3 font-display text-3xl font-semibold text-cream-100">{selectedTemplateData.title}</p>
+          <p className="mt-2 text-sm leading-6 text-cream-100/60">{selectedTemplateData.description}</p>
+        </GlassCard>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <GlassCard>
-          {notice ? (
-            <div className="mb-5 rounded-3xl border border-emerald-200/20 bg-emerald-200/[0.08] p-4 text-sm leading-6 text-cream-100/75">
-              {notice}
-            </div>
-          ) : null}
+      {notice ? (
+        <div className="mb-6 rounded-3xl border border-emerald-200/20 bg-emerald-200/[0.08] p-4 text-sm leading-6 text-cream-100/75">
+          {notice}
+        </div>
+      ) : null}
 
-          <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
+        <div className="space-y-5">
+          <GlassCard>
+            <p className="font-display text-3xl font-semibold text-cream-100">1. Pick the feeling</p>
+            <p className="mt-2 text-sm leading-6 text-cream-100/60">
+              Start from a template. You can edit everything after.
+            </p>
+
+            <div className="mt-5 grid gap-3">
+              {templates.map((template) => {
+                const active = selectedTemplate === template.id;
+
+                return (
+                  <button
+                    key={template.id}
+                    className={`rounded-[1.75rem] border p-5 text-left transition ${
+                      active
+                        ? "border-rose-200/50 bg-rose-200/[0.12]"
+                        : "border-white/10 bg-white/[0.045] hover:bg-white/[0.075]"
+                    }`}
+                    type="button"
+                    onClick={() => applyTemplate(template)}
+                  >
+                    <span className="block font-display text-2xl font-semibold text-cream-100">
+                      {template.title}
+                    </span>
+                    <span className="mt-2 block text-sm leading-6 text-cream-100/60">{template.description}</span>
+                    <span className="mt-3 inline-flex rounded-full border border-white/10 bg-white/[0.055] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-cream-100/45">
+                      {toneLabels[template.tone]} · {roomLabels[template.room]}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </GlassCard>
+
+          <GlassCard>
+            <p className="font-display text-3xl font-semibold text-cream-100">2. Tiny care actions</p>
+            <p className="mt-2 text-sm leading-6 text-cream-100/60">Select up to five. Keep it kind, not demanding.</p>
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {actionOptions.map((action) => {
+                const active = draft.gentleActions.includes(action);
+
+                return (
+                  <button
+                    key={action}
+                    className={`rounded-3xl border p-4 text-left text-sm font-semibold transition ${
+                      active
+                        ? "border-emerald-200/30 bg-emerald-200/[0.10] text-cream-100"
+                        : "border-white/10 bg-white/[0.045] text-cream-100/65 hover:bg-white/[0.075]"
+                    }`}
+                    onClick={() => toggleAction(action)}
+                    type="button"
+                  >
+                    {active ? "✓ " : ""}
+                    {action}
+                  </button>
+                );
+              })}
+            </div>
+          </GlassCard>
+        </div>
+
+        <GlassCard>
+          <p className="font-display text-3xl font-semibold text-cream-100">3. Make it personal</p>
+
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <label className="block text-sm font-semibold text-cream-100/75">
               Your name
               <input
                 className="mt-2 min-h-12 w-full rounded-2xl border border-white/10 bg-white/[0.06] px-4 text-cream-100 outline-none placeholder:text-cream-100/40 focus:border-rose-200/70"
                 value={draft.creatorName}
                 onChange={(event) => updateDraft({ creatorName: event.currentTarget.value })}
-                placeholder="Soumyadeep"
+                placeholder="Your name"
               />
             </label>
 
@@ -344,52 +560,52 @@ export function CarePackage({ onNavigate }: CarePackageProps) {
           <label className="mt-5 block text-sm font-semibold text-cream-100/75">
             Opening note
             <textarea
-              className="mt-2 min-h-32 w-full resize-none rounded-2xl border border-white/10 bg-white/[0.06] p-4 text-cream-100 outline-none placeholder:text-cream-100/40 focus:border-rose-200/70"
+              className="mt-2 min-h-40 w-full resize-none rounded-2xl border border-white/10 bg-white/[0.06] p-4 text-cream-100 outline-none placeholder:text-cream-100/40 focus:border-rose-200/70"
               value={draft.openingNote}
               onChange={(event) => updateDraft({ openingNote: event.currentTarget.value })}
               placeholder="Write something gentle..."
             />
           </label>
 
-          <div className="mt-5">
-            <p className="text-sm font-semibold text-cream-100/75">Comfort tone</p>
-            <div className="mt-3 grid gap-3 sm:grid-cols-5">
-              {toneOptions.map((tone) => (
-                <button
-                  key={tone.value}
-                  className={`rounded-3xl border p-4 text-left transition ${
-                    draft.tone === tone.value
-                      ? "border-rose-200/50 bg-rose-200/[0.12]"
-                      : "border-white/10 bg-white/[0.045] hover:bg-white/[0.075]"
-                  }`}
-                  onClick={() => useToneTemplate(tone.value)}
-                  type="button"
-                >
-                  <span className="block text-sm font-semibold text-cream-100">{tone.label}</span>
-                  <span className="mt-1 block text-xs leading-5 text-cream-100/55">{tone.description}</span>
-                </button>
-              ))}
-            </div>
+          <div className="mt-3">
+            <SoftButton variant="secondary" onClick={refineNote}>
+              Soften this note
+            </SoftButton>
           </div>
 
-          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          <div className="mt-5 grid gap-4 sm:grid-cols-3">
             <label className="block text-sm font-semibold text-cream-100/75">
-              Room mood
+              Tone
               <select
                 className="mt-2 min-h-12 w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 text-cream-100 outline-none focus:border-rose-200/70"
-                value={draft.room}
-                onChange={(event) => updateDraft({ room: event.currentTarget.value as CarePackageRoom })}
+                value={draft.tone}
+                onChange={(event) => updateDraft({ tone: event.currentTarget.value as CarePackageTone })}
               >
-                {roomOptions.map((room) => (
-                  <option key={room.value} value={room.value}>
-                    {room.label}
+                {Object.entries(toneLabels).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
                   </option>
                 ))}
               </select>
             </label>
 
             <label className="block text-sm font-semibold text-cream-100/75">
-              Suggested sound
+              Room
+              <select
+                className="mt-2 min-h-12 w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 text-cream-100 outline-none focus:border-rose-200/70"
+                value={draft.room}
+                onChange={(event) => updateDraft({ room: event.currentTarget.value as CarePackageRoom })}
+              >
+                {Object.entries(roomLabels).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="block text-sm font-semibold text-cream-100/75">
+              Sound
               <select
                 className="mt-2 min-h-12 w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 text-cream-100 outline-none focus:border-rose-200/70"
                 value={draft.soundscape}
@@ -402,30 +618,6 @@ export function CarePackage({ onNavigate }: CarePackageProps) {
                 <option value="fireplace">Fireplace</option>
               </select>
             </label>
-          </div>
-
-          <div className="mt-5">
-            <p className="text-sm font-semibold text-cream-100/75">Tiny actions</p>
-            <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              {actionOptions.map((action) => {
-                const active = draft.gentleActions.includes(action);
-
-                return (
-                  <button
-                    key={action}
-                    className={`rounded-3xl border p-4 text-left text-sm font-semibold transition ${
-                      active
-                        ? "border-emerald-200/30 bg-emerald-200/[0.10] text-cream-100"
-                        : "border-white/10 bg-white/[0.045] text-cream-100/65 hover:bg-white/[0.075]"
-                    }`}
-                    onClick={() => toggleAction(action)}
-                    type="button"
-                  >
-                    {action}
-                  </button>
-                );
-              })}
-            </div>
           </div>
 
           <div className="mt-5 space-y-3">
@@ -442,7 +634,10 @@ export function CarePackage({ onNavigate }: CarePackageProps) {
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <SoftButton onClick={() => void createPackage()}>Create share link</SoftButton>
-            <SoftButton variant="secondary" onClick={() => setDraft(createDefaultPackage())}>
+            <SoftButton variant="secondary" onClick={togglePreview}>
+              Preview recipient view
+            </SoftButton>
+            <SoftButton variant="ghost" onClick={() => setDraft(createDefaultPackage())}>
               Reset
             </SoftButton>
           </div>
@@ -456,60 +651,63 @@ export function CarePackage({ onNavigate }: CarePackageProps) {
                 readOnly
                 onFocus={(event) => event.currentTarget.select()}
               />
-              <div className="mt-3">
+              <div className="mt-3 flex flex-col gap-3 sm:flex-row">
                 <SoftButton variant="secondary" onClick={() => void copyLink()}>
                   Copy link
+                </SoftButton>
+                <SoftButton variant="secondary" onClick={() => void nativeShare()}>
+                  Share
                 </SoftButton>
               </div>
             </div>
           ) : null}
         </GlassCard>
+      </div>
 
-        <div className="space-y-5">
-          <GlassCard className="border-rose-200/20 bg-rose-200/[0.07]">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-rose-200/75">Preview</p>
-            <h3 className="mt-3 font-display text-4xl font-semibold text-cream-100">{draft.title}</h3>
-            <p className="mt-2 text-sm text-cream-100/55">
-              {selectedTone.label} · {draft.room} · {draft.soundscape}
-            </p>
-            <p className="mt-5 whitespace-pre-line leading-7 text-cream-100/72">{draft.openingNote}</p>
+      <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_0.75fr]">
+        <GlassCard className="border-rose-200/20 bg-rose-200/[0.07]">
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-rose-200/75">Live preview</p>
+          <h3 className="mt-3 font-display text-4xl font-semibold text-cream-100">{draft.title}</h3>
+          <p className="mt-2 text-sm text-cream-100/55">
+            {toneLabels[draft.tone]} · {roomLabels[draft.room]} · {draft.soundscape}
+          </p>
+          <p className="mt-5 whitespace-pre-line leading-7 text-cream-100/72">{draft.openingNote}</p>
 
-            <div className="mt-5 space-y-2">
-              {draft.comfortMessages.map((message) => (
-                <div key={message} className="rounded-3xl border border-white/10 bg-white/[0.05] p-4 text-sm leading-6 text-cream-100/72">
-                  “{message}”
-                </div>
-              ))}
-            </div>
-          </GlassCard>
+          <div className="mt-5 grid gap-3 md:grid-cols-3">
+            {draft.comfortMessages.map((message) => (
+              <div key={message} className="rounded-3xl border border-white/10 bg-white/[0.05] p-4 text-sm leading-6 text-cream-100/72">
+                “{message}”
+              </div>
+            ))}
+          </div>
+        </GlassCard>
 
-          <GlassCard>
-            <p className="font-display text-3xl font-semibold text-cream-100">Recent packages</p>
-            <div className="mt-5 space-y-3">
-              {recentPackages.length === 0 ? (
-                <p className="text-sm leading-6 text-cream-100/60">No care packages created on this browser yet.</p>
-              ) : (
-                recentPackages.map((item) => (
-                  <button
-                    key={item.id}
-                    className="w-full rounded-3xl border border-white/10 bg-white/[0.045] p-4 text-left transition hover:bg-white/[0.075]"
-                    onClick={() => {
-                      const link = createCarePackageLink(item);
-                      setShareLink(link);
-                      setNotice("Recent package loaded. Copy the link below.");
-                    }}
-                    type="button"
-                  >
-                    <span className="block font-semibold text-cream-100">{item.title}</span>
-                    <span className="mt-1 block text-xs text-cream-100/50">
-                      {new Date(item.createdAt).toLocaleString()}
-                    </span>
-                  </button>
-                ))
-              )}
-            </div>
-          </GlassCard>
-        </div>
+        <GlassCard>
+          <p className="font-display text-3xl font-semibold text-cream-100">Recent packages</p>
+          <div className="mt-5 space-y-3">
+            {recentPackages.length === 0 ? (
+              <p className="text-sm leading-6 text-cream-100/60">No care packages created on this browser yet.</p>
+            ) : (
+              recentPackages.slice(0, 5).map((item) => (
+                <button
+                  key={item.id}
+                  className="w-full rounded-3xl border border-white/10 bg-white/[0.045] p-4 text-left transition hover:bg-white/[0.075]"
+                  onClick={() => {
+                    const link = createCarePackageLink(item);
+                    setShareLink(link);
+                    setNotice("Recent package loaded. Copy or share the link below.");
+                  }}
+                  type="button"
+                >
+                  <span className="block font-semibold text-cream-100">{item.title}</span>
+                  <span className="mt-1 block text-xs text-cream-100/50">
+                    {new Date(item.createdAt).toLocaleString()}
+                  </span>
+                </button>
+              ))
+            )}
+          </div>
+        </GlassCard>
       </div>
     </section>
   );
