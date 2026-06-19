@@ -400,16 +400,3 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
-
-/* Dear Her v3.4 Mira revamp */
-.mira-guided-card {
-  background:
-    radial-gradient(circle at 85% 15%, rgba(255, 211, 226, 0.14), transparent 32%),
-    rgba(255, 255, 255, 0.045);
-}
-
-@media (max-width: 640px) {
-  .mira-mobile-thread {
-    min-height: 68vh;
-  }
-}

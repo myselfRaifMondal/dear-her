@@ -55,11 +55,6 @@ export type AnalyticsEventName =
   | "care_package_share_clicked"
   | "care_package_viewer_action_clicked"
   | "care_package_note_refined"
-  | "mira_guided_prompt_clicked"
-  | "mira_note_helper_used"
-  | "mira_plan_suggestion_clicked"
-  | "mira_thread_cleared"
-  | "mira_copy_reply_clicked"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";
