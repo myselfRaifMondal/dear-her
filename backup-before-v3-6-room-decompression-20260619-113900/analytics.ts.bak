@@ -65,13 +65,6 @@ export type AnalyticsEventName =
   | "landing_secondary_action_clicked"
   | "landing_soft_path_clicked"
   | "landing_daily_step_completed"
-  | "room_decompression_loaded"
-  | "room_session_started"
-  | "room_session_stopped"
-  | "room_mood_changed"
-  | "room_sound_changed"
-  | "room_grounding_action_clicked"
-  | "room_mira_prompt_clicked"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";

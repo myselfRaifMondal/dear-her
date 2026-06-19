@@ -424,26 +424,3 @@ button:disabled {
     letter-spacing: -0.045em;
   }
 }
-
-/* Dear Her v3.6 Room Decompression */
-.room-session-breathe {
-  animation: roomBreath 5.5s ease-in-out infinite;
-}
-
-@keyframes roomBreath {
-  0%, 100% {
-    transform: scale(0.94);
-    opacity: 0.72;
-  }
-
-  50% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@media (max-width: 640px) {
-  .room-mobile-actions {
-    grid-template-columns: 1fr;
-  }
-}
