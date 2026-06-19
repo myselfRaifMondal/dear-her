@@ -358,16 +358,3 @@ button:disabled {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
-
-/* Dear Her v3.1 Daily Soft Plan */
-.daily-soft-progress-ring {
-  background:
-    radial-gradient(circle at center, rgba(7, 10, 26, 0.86) 56%, transparent 57%),
-    conic-gradient(rgba(255, 250, 243, 0.95), rgba(255, 211, 226, 0.75), rgba(255, 250, 243, 0.18));
-}
-
-@media (max-width: 640px) {
-  .daily-soft-mobile-stack {
-    grid-template-columns: 1fr;
-  }
-}

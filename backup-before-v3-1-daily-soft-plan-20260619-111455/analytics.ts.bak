@@ -39,12 +39,6 @@ export type AnalyticsEventName =
   | "product_room_sound_selected"
   | "you_space_action_clicked"
   | "v3_revamp_loaded"
-  | "daily_plan_started"
-  | "daily_plan_step_opened"
-  | "daily_plan_step_completed"
-  | "daily_plan_intention_updated"
-  | "daily_plan_energy_updated"
-  | "daily_plan_reset"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";
