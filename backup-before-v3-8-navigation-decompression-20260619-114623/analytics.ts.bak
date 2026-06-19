@@ -79,10 +79,6 @@ export type AnalyticsEventName =
   | "breathe_pattern_changed"
   | "breathe_duration_changed"
   | "breathe_aftercare_clicked"
-  | "dock_navigation_clicked"
-  | "dock_more_opened"
-  | "dock_more_closed"
-  | "dock_secondary_navigation_clicked"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";

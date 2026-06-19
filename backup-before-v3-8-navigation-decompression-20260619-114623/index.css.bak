@@ -470,17 +470,3 @@ button:disabled {
     transform: scale(0.9);
   }
 }
-
-/* Dear Her v3.8 Navigation Decompression */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-  nav[aria-label="Dear Her navigation"] {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-}
-
-@media (max-width: 420px) {
-  nav[aria-label="Dear Her navigation"] {
-    width: min(96vw, 42rem);
-    bottom: 0.65rem;
-  }
-}
