@@ -69,7 +69,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <SoftButton onClick={() => clickCta("start_softly", () => onNavigate("onboarding"))}>
+            <SoftButton onClick={() => clickCta("start_softly", () => onNavigate("breathe"))}>
               Start softly
             </SoftButton>
 
@@ -153,7 +153,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
             </p>
           </div>
 
-          <SoftButton onClick={() => clickCta("beta_start", () => onNavigate("onboarding"))}>
+          <SoftButton onClick={() => clickCta("beta_start", () => onNavigate("breathe"))}>
             Try the beta
           </SoftButton>
         </div>

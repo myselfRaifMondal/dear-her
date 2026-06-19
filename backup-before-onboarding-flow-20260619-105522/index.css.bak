@@ -301,16 +301,3 @@ button:disabled {
   background: rgba(255, 211, 226, 0.28);
   color: #fffaf3;
 }
-
-/* Dear Her v2.4 onboarding and first-session polish */
-@media (max-width: 640px) {
-  textarea,
-  input,
-  select {
-    font-size: 16px;
-  }
-}
-
-.first-session-guide-safe {
-  padding-bottom: env(safe-area-inset-bottom);
-}

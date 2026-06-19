@@ -13,7 +13,6 @@ import { CloudSync } from "./components/CloudSync";
 import { FavoriteThings } from "./components/FavoriteThings";
 import { Feedback } from "./components/Feedback";
 import { FloatingParticles } from "./components/FloatingParticles";
-import { FirstSessionGuide } from "./components/FirstSessionGuide";
 import { FounderGate } from "./components/FounderGate";
 import { FounderModePanel } from "./components/FounderModePanel";
 import { InstallPrompt } from "./components/InstallPrompt";
@@ -22,7 +21,6 @@ import { Insights } from "./components/Insights";
 import { MiraCompanion } from "./components/MiraCompanion";
 import { MoodCheckIn } from "./components/MoodCheckIn";
 import { OfflineBanner } from "./components/OfflineBanner";
-import { OnboardingFlow } from "./components/OnboardingFlow";
 import { NotFound } from "./components/NotFound";
 import { PageTransition } from "./components/PageTransition";
 import { PersonalMemories } from "./components/PersonalMemories";
@@ -55,7 +53,6 @@ import type { EnvironmentId, FavoriteThing, Memory, Mood, Screen, UserSettings }
 const screenToPath: Record<Screen, string> = {
   welcome: "/",
   mood: "/mood",
-  onboarding: "/onboarding",
   breathe: "/breathe",
   room: "/room",
   sounds: "/soundscapes",
@@ -72,7 +69,6 @@ const screenToPath: Record<Screen, string> = {
 
 function getScreenFromPath(pathname: string): Screen {
   if (pathname === "/") return "welcome";
-  if (pathname.startsWith("/onboarding")) return "onboarding";
   if (pathname.startsWith("/mood")) return "mood";
   if (pathname.startsWith("/breathe")) return "breathe";
   if (pathname.startsWith("/room")) return "room";
@@ -253,15 +249,6 @@ function DearHerApp() {
             />
 
             <Route
-              path="/onboarding"
-              element={
-                <PageTransition reducedMotion={effectiveReducedMotion}>
-                  <OnboardingFlow onNavigate={navigate} />
-                </PageTransition>
-              }
-            />
-
-            <Route
               path="/mood"
               element={
                 <PageTransition reducedMotion={effectiveReducedMotion}>
@@ -410,7 +397,6 @@ function DearHerApp() {
 
       {activeScreen !== "welcome" ? <ComfortDock activeScreen={activeScreen} onChangeScreen={navigate} founderMode={founderMode} /> : null}
 
-      <FirstSessionGuide onNavigate={navigate} />
       <InstallPrompt />
 
       {settingsOpen ? (

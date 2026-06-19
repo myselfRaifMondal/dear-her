@@ -24,10 +24,6 @@ export type AnalyticsEventName =
   | "care_package_copied"
   | "care_package_opened"
   | "landing_cta_clicked"
-  | "onboarding_started"
-  | "onboarding_completed"
-  | "first_session_guide_started"
-  | "first_session_guide_dismissed"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";
