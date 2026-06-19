@@ -16,3 +16,4 @@ dear-her-upgrade-openai-mira.sh
 .env.*
 !.env.example
 .env.local
+dear-her-upgrade-feedback-dashboard.sh

@@ -19,7 +19,6 @@ export type AnalyticsEventName =
   | "mira_ai_reply_success"
   | "mira_ai_reply_fallback"
   | "mira_ai_reply_error"
-  | "feedback_submitted"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";

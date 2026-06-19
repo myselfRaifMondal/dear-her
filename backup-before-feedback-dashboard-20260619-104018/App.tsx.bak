@@ -10,10 +10,8 @@ import { ComfortRoom } from "./components/ComfortRoom";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { CloudSync } from "./components/CloudSync";
 import { FavoriteThings } from "./components/FavoriteThings";
-import { Feedback } from "./components/Feedback";
 import { FloatingParticles } from "./components/FloatingParticles";
 import { InstallPrompt } from "./components/InstallPrompt";
-import { Insights } from "./components/Insights";
 import { MiraCompanion } from "./components/MiraCompanion";
 import { MoodCheckIn } from "./components/MoodCheckIn";
 import { OfflineBanner } from "./components/OfflineBanner";
@@ -55,8 +53,6 @@ const screenToPath: Record<Screen, string> = {
   messages: "/messages",
   mira: "/mira",
   sync: "/sync",
-  feedback: "/feedback",
-  insights: "/insights",
   favorites: "/favorites",
   activities: "/activities",
 };
@@ -71,8 +67,6 @@ function getScreenFromPath(pathname: string): Screen {
   if (pathname.startsWith("/messages")) return "messages";
   if (pathname.startsWith("/mira")) return "mira";
   if (pathname.startsWith("/sync")) return "sync";
-  if (pathname.startsWith("/feedback")) return "feedback";
-  if (pathname.startsWith("/insights")) return "insights";
   if (pathname.startsWith("/favorites")) return "favorites";
   if (pathname.startsWith("/activities")) return "activities";
   return "welcome";
@@ -331,24 +325,6 @@ function DearHerApp() {
               element={
                 <PageTransition reducedMotion={effectiveReducedMotion}>
                   <FavoriteThings favorites={favorites} onAddFavorite={handleAddFavorite} onDeleteFavorite={handleDeleteFavorite} />
-                </PageTransition>
-              }
-            />
-
-            <Route
-              path="/feedback"
-              element={
-                <PageTransition reducedMotion={effectiveReducedMotion}>
-                  <Feedback />
-                </PageTransition>
-              }
-            />
-
-            <Route
-              path="/insights"
-              element={
-                <PageTransition reducedMotion={effectiveReducedMotion}>
-                  <Insights />
                 </PageTransition>
               }
             />

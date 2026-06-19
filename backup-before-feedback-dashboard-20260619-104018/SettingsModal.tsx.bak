@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { clearAnalytics, downloadAnalytics, readAnalytics } from "../lib/analytics";
-import { clearFeedback, downloadFeedback, loadFeedback } from "../lib/feedbackStorage";
 import { downloadLocalData, importLocalDataFromFile } from "../lib/dataPortability";
 import { clearMemoryStorage } from "../lib/memoryStorage";
 import {
@@ -143,33 +142,6 @@ export function SettingsModal({ open, settings, onClose, onChangeSettings, onCle
           />
         </div>
 
-
-
-        <div className="mt-5 rounded-3xl border border-white/10 bg-white/[0.045] p-5">
-          <p className="font-semibold text-cream-100">Beta feedback</p>
-          <p className="mt-2 text-sm leading-6 text-cream-100/60">
-            Feedback entries are saved only on this browser. Current entries:
-            <span className="font-semibold text-cream-100"> {loadFeedback().length}</span>.
-          </p>
-
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            <SoftButton variant="secondary" onClick={downloadFeedback}>
-              Export feedback
-            </SoftButton>
-
-            <SoftButton
-              variant="secondary"
-              onClick={() =>
-                confirmAndRun("Clear local beta feedback from this browser?", () => {
-                  clearFeedback();
-                  setNotice("Local feedback cleared.");
-                })
-              }
-            >
-              Clear feedback
-            </SoftButton>
-          </div>
-        </div>
 
         <div className="mt-5 rounded-3xl border border-white/10 bg-white/[0.045] p-5">
           <p className="font-semibold text-cream-100">Local usage signals</p>

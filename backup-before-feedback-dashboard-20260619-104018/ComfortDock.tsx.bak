@@ -14,8 +14,6 @@ const items: DockItem[] = [
   { id: "messages", label: "Messages", icon: "♡" },
   { id: "mira", label: "Mira", icon: "✦" },
   { id: "sync", label: "Sync", icon: "☁" },
-  { id: "feedback", label: "Feedback", icon: "✎" },
-  { id: "insights", label: "Insights", icon: "◌" },
   { id: "favorites", label: "Favorites", icon: "⋆" },
   { id: "activities", label: "Calm", icon: "☾" },
 ];
