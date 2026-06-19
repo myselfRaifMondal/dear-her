@@ -16,7 +16,7 @@ export function FirstSessionGuide({ onNavigate }: FirstSessionGuideProps) {
   const hiddenRoutes = ["/onboarding", "/feedback", "/insights", "/sync"];
   const shouldHideOnRoute = hiddenRoutes.some((route) => location.pathname.startsWith(route));
 
-  if (!visible || shouldHideOnRoute || location.pathname === "/") return null;
+  if (!visible || shouldHideOnRoute) return null;
 
   function dismiss(): void {
     dismissFirstSessionGuide();

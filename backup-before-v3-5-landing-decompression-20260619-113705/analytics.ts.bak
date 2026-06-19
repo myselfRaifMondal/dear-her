@@ -60,11 +60,6 @@ export type AnalyticsEventName =
   | "mira_plan_suggestion_clicked"
   | "mira_thread_cleared"
   | "mira_copy_reply_clicked"
-  | "landing_decompression_loaded"
-  | "landing_primary_cta_clicked"
-  | "landing_secondary_action_clicked"
-  | "landing_soft_path_clicked"
-  | "landing_daily_step_completed"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";

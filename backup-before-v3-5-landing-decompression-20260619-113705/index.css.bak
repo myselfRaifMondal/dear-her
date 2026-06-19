@@ -413,14 +413,3 @@ button:disabled {
     min-height: 68vh;
   }
 }
-
-/* Dear Her v3.5 Landing Decompression */
-.landing-decompressed {
-  max-width: 72rem;
-}
-
-@media (max-width: 640px) {
-  .landing-decompressed h1 {
-    letter-spacing: -0.045em;
-  }
-}
