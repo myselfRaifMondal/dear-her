@@ -20,9 +20,6 @@ export type AnalyticsEventName =
   | "mira_ai_reply_fallback"
   | "mira_ai_reply_error"
   | "feedback_submitted"
-  | "care_package_created"
-  | "care_package_copied"
-  | "care_package_opened"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";

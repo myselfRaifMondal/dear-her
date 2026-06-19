@@ -18,3 +18,4 @@ dear-her-upgrade-openai-mira.sh
 .env.local
 dear-her-upgrade-feedback-dashboard.sh
 dear-her-upgrade-founder-mode.sh
+dear-her-upgrade-care-package-mode.sh

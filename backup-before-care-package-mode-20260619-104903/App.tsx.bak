@@ -4,7 +4,6 @@ import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-ro
 import { AppSplash } from "./components/AppSplash";
 import { AuroraBackground } from "./components/AuroraBackground";
 import { BreathingSpace } from "./components/BreathingSpace";
-import { CarePackage } from "./components/CarePackage";
 import { ComfortDock } from "./components/ComfortDock";
 import { ComfortMessages } from "./components/ComfortMessages";
 import { ComfortRoom } from "./components/ComfortRoom";
@@ -58,7 +57,6 @@ const screenToPath: Record<Screen, string> = {
   memories: "/memories",
   messages: "/messages",
   mira: "/mira",
-  care: "/care-package",
   sync: "/sync",
   feedback: "/feedback",
   insights: "/insights",
@@ -75,7 +73,6 @@ function getScreenFromPath(pathname: string): Screen {
   if (pathname.startsWith("/memories")) return "memories";
   if (pathname.startsWith("/messages")) return "messages";
   if (pathname.startsWith("/mira")) return "mira";
-  if (pathname.startsWith("/care-package")) return "care";
   if (pathname.startsWith("/sync")) return "sync";
   if (pathname.startsWith("/feedback")) return "feedback";
   if (pathname.startsWith("/insights")) return "insights";
@@ -311,15 +308,6 @@ function DearHerApp() {
               element={
                 <PageTransition reducedMotion={effectiveReducedMotion}>
                   <ComfortMessages selectedMood={selectedMood} />
-                </PageTransition>
-              }
-            />
-
-            <Route
-              path="/care-package"
-              element={
-                <PageTransition reducedMotion={effectiveReducedMotion}>
-                  <CarePackage onNavigate={navigate} />
                 </PageTransition>
               }
             />
