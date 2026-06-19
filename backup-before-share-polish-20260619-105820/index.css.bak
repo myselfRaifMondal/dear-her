@@ -314,21 +314,3 @@ button:disabled {
 .first-session-guide-safe {
   padding-bottom: env(safe-area-inset-bottom);
 }
-
-/* Dear Her v2.5 share-ready polish */
-.meta-preview-card {
-  background:
-    radial-gradient(circle at 80% 10%, rgba(255, 211, 226, 0.18), transparent 32%),
-    radial-gradient(circle at 15% 90%, rgba(191, 167, 255, 0.14), transparent 38%),
-    rgba(255, 255, 255, 0.045);
-}
-
-@media (hover: hover) {
-  .share-polish-hover {
-    transition: transform 240ms ease, background-color 240ms ease;
-  }
-
-  .share-polish-hover:hover {
-    transform: translateY(-3px);
-  }
-}

@@ -28,8 +28,6 @@ export type AnalyticsEventName =
   | "onboarding_completed"
   | "first_session_guide_started"
   | "first_session_guide_dismissed"
-  | "beta_badge_clicked"
-  | "testimonial_placeholder_clicked"
   | "settings_opened"
   | "data_exported"
   | "analytics_cleared";

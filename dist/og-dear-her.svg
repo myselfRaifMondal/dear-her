@@ -1,0 +1,23 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#070A1A"/>
+  <circle cx="950" cy="120" r="260" fill="#FFD3E2" opacity="0.18"/>
+  <circle cx="260" cy="520" r="300" fill="#BFA7FF" opacity="0.14"/>
+  <circle cx="900" cy="520" r="220" fill="#A7F3D0" opacity="0.08"/>
+  <rect x="72" y="72" width="1056" height="486" rx="56" fill="white" opacity="0.06"/>
+  <rect x="72" y="72" width="1056" height="486" rx="56" stroke="white" stroke-opacity="0.14" stroke-width="2"/>
+  <text x="120" y="172" fill="#FFD3E2" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700" letter-spacing="8">
+    PUBLIC BETA · COMFORT SANCTUARY
+  </text>
+  <text x="120" y="310" fill="#FFFAF3" font-family="Georgia, 'Times New Roman', serif" font-size="104" font-weight="700">
+    Dear Her
+  </text>
+  <text x="120" y="390" fill="#FFFAF3" opacity="0.76" font-family="Inter, Arial, sans-serif" font-size="36">
+    Comfort, made soft.
+  </text>
+  <text x="120" y="456" fill="#FFFAF3" opacity="0.58" font-family="Inter, Arial, sans-serif" font-size="27">
+    Breathing · Soundscapes · Care packages · Mira
+  </text>
+  <text x="120" y="508" fill="#FFFAF3" opacity="0.46" font-family="Inter, Arial, sans-serif" font-size="22">
+    Not medical advice. Not a tracker. A gentle space for difficult days.
+  </text>
+</svg>

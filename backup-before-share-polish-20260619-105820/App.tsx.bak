@@ -1,0 +1,443 @@
+import { AnimatePresence } from "motion/react";
+import { useEffect, useMemo, useState } from "react";
+import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { AppSplash } from "./components/AppSplash";
+import { AuroraBackground } from "./components/AuroraBackground";
+import { BreathingSpace } from "./components/BreathingSpace";
+import { CarePackage } from "./components/CarePackage";
+import { ComfortDock } from "./components/ComfortDock";
+import { ComfortMessages } from "./components/ComfortMessages";
+import { ComfortRoom } from "./components/ComfortRoom";
+import { ErrorBoundary } from "./components/ErrorBoundary";
+import { CloudSync } from "./components/CloudSync";
+import { FavoriteThings } from "./components/FavoriteThings";
+import { Feedback } from "./components/Feedback";
+import { FloatingParticles } from "./components/FloatingParticles";
+import { FirstSessionGuide } from "./components/FirstSessionGuide";
+import { FounderGate } from "./components/FounderGate";
+import { FounderModePanel } from "./components/FounderModePanel";
+import { InstallPrompt } from "./components/InstallPrompt";
+import { LandingPage } from "./components/LandingPage";
+import { Insights } from "./components/Insights";
+import { MiraCompanion } from "./components/MiraCompanion";
+import { MoodCheckIn } from "./components/MoodCheckIn";
+import { OfflineBanner } from "./components/OfflineBanner";
+import { OnboardingFlow } from "./components/OnboardingFlow";
+import { NotFound } from "./components/NotFound";
+import { PageTransition } from "./components/PageTransition";
+import { PersonalMemories } from "./components/PersonalMemories";
+import { RelaxationActivities } from "./components/RelaxationActivities";
+import { SettingsModal } from "./components/SettingsModal";
+import { Soundscapes } from "./components/Soundscapes";
+import { TopBar } from "./components/TopBar";
+import { ToastProvider } from "./components/ToastProvider";
+import { Welcome } from "./components/Welcome";
+import { useFounderMode } from "./hooks/useFounderMode";
+import { useSystemReducedMotion } from "./hooks/useReducedMotion";
+import { setAmbienceVolume, startAmbience, stopAmbience } from "./lib/ambientAudio";
+import { trackEvent, trackPageView } from "./lib/analytics";
+import {
+  addMemory as addStoredMemory,
+  clearMemoryStorage,
+  deleteMemory as deleteStoredMemory,
+  loadMemories as loadStoredMemories,
+} from "./lib/memoryStorage";
+import {
+  loadFavorites,
+  loadMood,
+  loadSettings,
+  saveFavorites,
+  saveMood,
+  saveSettings,
+} from "./lib/storage";
+import type { EnvironmentId, FavoriteThing, Memory, Mood, Screen, UserSettings } from "./types/app";
+
+const screenToPath: Record<Screen, string> = {
+  welcome: "/",
+  mood: "/mood",
+  onboarding: "/onboarding",
+  breathe: "/breathe",
+  room: "/room",
+  sounds: "/soundscapes",
+  memories: "/memories",
+  messages: "/messages",
+  mira: "/mira",
+  care: "/care-package",
+  sync: "/sync",
+  feedback: "/feedback",
+  insights: "/insights",
+  favorites: "/favorites",
+  activities: "/activities",
+};
+
+function getScreenFromPath(pathname: string): Screen {
+  if (pathname === "/") return "welcome";
+  if (pathname.startsWith("/onboarding")) return "onboarding";
+  if (pathname.startsWith("/mood")) return "mood";
+  if (pathname.startsWith("/breathe")) return "breathe";
+  if (pathname.startsWith("/room")) return "room";
+  if (pathname.startsWith("/soundscapes")) return "sounds";
+  if (pathname.startsWith("/memories")) return "memories";
+  if (pathname.startsWith("/messages")) return "messages";
+  if (pathname.startsWith("/mira")) return "mira";
+  if (pathname.startsWith("/care-package")) return "care";
+  if (pathname.startsWith("/sync")) return "sync";
+  if (pathname.startsWith("/feedback")) return "feedback";
+  if (pathname.startsWith("/insights")) return "insights";
+  if (pathname.startsWith("/favorites")) return "favorites";
+  if (pathname.startsWith("/activities")) return "activities";
+  return "welcome";
+}
+
+function DearHerApp() {
+  const location = useLocation();
+  const navigateToPath = useNavigate();
+  const systemReducedMotion = useSystemReducedMotion();
+  const { founderMode, enableFounderMode, disableFounder } = useFounderMode();
+
+  const activeScreen = getScreenFromPath(location.pathname);
+
+  const [environment, setEnvironment] = useState<EnvironmentId>("rain");
+  const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
+  const [memories, setMemories] = useState<Memory[]>([]);
+  const [favorites, setFavorites] = useState<FavoriteThing[]>([]);
+  const [settings, setSettings] = useState<UserSettings>({
+    reducedMotion: false,
+    reducedTransparency: false,
+    ambienceVolume: 0.35,
+  });
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [isAmbiencePlaying, setIsAmbiencePlaying] = useState(false);
+
+  useEffect(() => {
+    void loadStoredMemories().then(setMemories);
+    setFavorites(loadFavorites());
+    setSettings(loadSettings());
+
+    const storedMood = loadMood();
+    if (storedMood) setSelectedMood(storedMood as Mood);
+  }, []);
+
+  useEffect(() => {
+    trackPageView(location.pathname, activeScreen);
+  }, [location.pathname, activeScreen]);
+
+  useEffect(() => {
+    saveSettings(settings);
+    setAmbienceVolume(settings.ambienceVolume);
+  }, [settings]);
+
+  const effectiveReducedMotion = systemReducedMotion || settings.reducedMotion;
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: effectiveReducedMotion ? "auto" : "smooth",
+    });
+  }, [location.pathname, effectiveReducedMotion]);
+
+  const shellClasses = useMemo(
+    () =>
+      settings.reducedTransparency
+        ? "bg-slate-950/40 [--glass-strength:0.16]"
+        : "bg-transparent [--glass-strength:0.075]",
+    [settings.reducedTransparency],
+  );
+
+  function navigate(screen: Screen): void {
+    navigateToPath(screenToPath[screen]);
+  }
+
+  function handleSelectMood(mood: Mood): void {
+    setSelectedMood(mood);
+    saveMood(mood);
+    trackEvent("mood_selected", { mood });
+  }
+
+  function handleAddMemory(memory: Memory): void {
+    void addStoredMemory(memory).then((updated) => {
+      setMemories(updated);
+      trackEvent("memory_added", { totalMemories: updated.length });
+    });
+  }
+
+  function handleDeleteMemory(id: string): void {
+    void deleteStoredMemory(id).then((updated) => {
+      setMemories(updated);
+      trackEvent("memory_deleted", { totalMemories: updated.length });
+    });
+  }
+
+  function handleAddFavorite(favorite: FavoriteThing): void {
+    const updated = [favorite, ...favorites];
+    setFavorites(updated);
+    saveFavorites(updated);
+    trackEvent("favorite_added", { kind: favorite.kind, totalFavorites: updated.length });
+  }
+
+  function handleDeleteFavorite(id: string): void {
+    const updated = favorites.filter((favorite) => favorite.id !== id);
+    setFavorites(updated);
+    saveFavorites(updated);
+    trackEvent("favorite_deleted", { totalFavorites: updated.length });
+  }
+
+  async function toggleAmbience(): Promise<void> {
+    if (isAmbiencePlaying) {
+      stopAmbience();
+      setIsAmbiencePlaying(false);
+      trackEvent("ambience_stopped", { environment });
+      return;
+    }
+
+    await startAmbience(environment, settings.ambienceVolume);
+    setIsAmbiencePlaying(true);
+    trackEvent("ambience_started", { environment, volume: settings.ambienceVolume });
+  }
+
+  async function changeEnvironment(nextEnvironment: EnvironmentId): Promise<void> {
+    setEnvironment(nextEnvironment);
+    trackEvent("environment_changed", { environment: nextEnvironment });
+
+    if (isAmbiencePlaying) {
+      await startAmbience(nextEnvironment, settings.ambienceVolume);
+    }
+  }
+
+  function handleSettingsChange(nextSettings: UserSettings): void {
+    setSettings(nextSettings);
+  }
+
+  function clearLocalData(): void {
+    stopAmbience();
+    void clearMemoryStorage();
+    window.localStorage.clear();
+    setMemories([]);
+    setFavorites([]);
+    setSelectedMood(null);
+    setIsAmbiencePlaying(false);
+    setSettings({
+      reducedMotion: false,
+      reducedTransparency: false,
+      ambienceVolume: 0.35,
+    });
+  }
+
+  useEffect(() => {
+    return () => stopAmbience();
+  }, []);
+
+  return (
+    <div className={`min-h-screen text-cream-100 ${shellClasses}`}>
+      <AuroraBackground environment={environment} reducedMotion={effectiveReducedMotion} />
+      <FloatingParticles reducedMotion={effectiveReducedMotion} />
+      <AppSplash reducedMotion={effectiveReducedMotion} />
+      <OfflineBanner />
+      <TopBar
+        onOpenSettings={() => {
+          setSettingsOpen(true);
+          trackEvent("settings_opened");
+        }}
+      />
+
+      <main id="main-content">
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route
+              path="/"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <LandingPage onNavigate={navigate} />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/onboarding"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <OnboardingFlow onNavigate={navigate} />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/mood"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <MoodCheckIn selectedMood={selectedMood} onSelectMood={handleSelectMood} onNavigate={navigate} />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/breathe"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <BreathingSpace reducedMotion={effectiveReducedMotion} onOpenRoom={() => navigate("room")} />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/room"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <ComfortRoom
+                    environment={environment}
+                    mood={selectedMood}
+                    onChangeEnvironment={(next) => void changeEnvironment(next)}
+                    onNavigate={navigate}
+                    isAmbiencePlaying={isAmbiencePlaying}
+                    onToggleAmbience={() => void toggleAmbience()}
+                  />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/soundscapes"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <Soundscapes
+                    environment={environment}
+                    volume={settings.ambienceVolume}
+                    isAmbiencePlaying={isAmbiencePlaying}
+                    onEnvironmentChange={(next) => void changeEnvironment(next)}
+                    onVolumeChange={(volume) => setSettings({ ...settings, ambienceVolume: volume })}
+                    onToggleAmbience={() => void toggleAmbience()}
+                  />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/memories"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <PersonalMemories memories={memories} onAddMemory={handleAddMemory} onDeleteMemory={handleDeleteMemory} />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/messages"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <ComfortMessages selectedMood={selectedMood} />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/care-package"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <CarePackage onNavigate={navigate} />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/mira"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <MiraCompanion selectedMood={selectedMood} onNavigate={navigate} />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/sync"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <CloudSync />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/favorites"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <FavoriteThings favorites={favorites} onAddFavorite={handleAddFavorite} onDeleteFavorite={handleDeleteFavorite} />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/feedback"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <FounderGate enabled={founderMode} onUnlock={enableFounderMode}>
+                    <Feedback />
+                  </FounderGate>
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/insights"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <FounderGate enabled={founderMode} onUnlock={enableFounderMode}>
+                    <Insights />
+                  </FounderGate>
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="/activities"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <RelaxationActivities onNavigate={navigate} />
+                </PageTransition>
+              }
+            />
+
+            <Route
+              path="*"
+              element={
+                <PageTransition reducedMotion={effectiveReducedMotion}>
+                  <NotFound onNavigate={navigate} />
+                </PageTransition>
+              }
+            />
+          </Routes>
+        </AnimatePresence>
+      </main>
+
+      {activeScreen !== "welcome" ? <ComfortDock activeScreen={activeScreen} onChangeScreen={navigate} founderMode={founderMode} /> : null}
+
+      <FirstSessionGuide onNavigate={navigate} />
+      <InstallPrompt />
+
+      {settingsOpen ? (
+        <div className="fixed bottom-6 left-6 z-[60] hidden w-80 xl:block">
+          <FounderModePanel founderMode={founderMode} onUnlock={enableFounderMode} onDisable={disableFounder} />
+        </div>
+      ) : null}
+
+      <SettingsModal
+        open={settingsOpen}
+        settings={settings}
+        onClose={() => setSettingsOpen(false)}
+        onChangeSettings={handleSettingsChange}
+        onClearData={clearLocalData}
+      />
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <ToastProvider>
+        <BrowserRouter>
+          <DearHerApp />
+        </BrowserRouter>
+      </ToastProvider>
+    </ErrorBoundary>
+  );
+}
