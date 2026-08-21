@@ -301,6 +301,10 @@ export function TodayDashboard({ onNavigate }: TodayDashboardProps) {
           <p className="mt-3 text-sm leading-6 text-cream-100/58">Get softer words when needed.</p>
         </GlassCard>
       </div>
+
+      <footer className="mx-auto mt-10 max-w-5xl border-t border-white/10 pt-6 text-center">
+        <p className="text-sm text-cream-100/50">For Tanisha Brahma. Built by Raif Mondal.</p>
+      </footer>
     </section>
   );
 }
