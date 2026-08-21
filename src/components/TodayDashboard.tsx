@@ -302,8 +302,14 @@ export function TodayDashboard({ onNavigate }: TodayDashboardProps) {
         </GlassCard>
       </div>
 
-      <footer className="mx-auto mt-10 max-w-5xl border-t border-white/10 pt-6 text-center">
-        <p className="text-sm text-cream-100/50">For Tanisha Brahma. Built by Raif Mondal.</p>
+      <footer className="mx-auto mt-8 max-w-5xl">
+        <GlassCard className="border-rose-200/20 bg-rose-200/[0.07] text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-rose-100/70">Made with love</p>
+          <p className="mt-3 font-display text-2xl font-semibold tracking-[-0.02em] text-cream-100">
+            For Tanisha Brahma.
+          </p>
+          <p className="mt-2 text-sm leading-6 text-cream-100/60">Built by Raif Mondal.</p>
+        </GlassCard>
       </footer>
     </section>
   );
